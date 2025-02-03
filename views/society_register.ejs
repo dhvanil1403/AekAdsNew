@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Society Management</title>
+    <link rel="stylesheet" href="/css/font.css" />
+    <link rel="stylesheet" href="/css/screen.css" />
+
+    <style>
+        body {
+            font-family: "Arial", sans-serif;
+            background-color: #f1faff;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .teams {
+            width: 100%;
+            /* height: 100%; */
+            /* display: flex; */
+            flex-direction: column;
+            justify-content: center;
+            gap: 2%;
+            align-items: start;
+            padding: 20px;
+            /* border: 1px solid black; */
+        }
+
+        .member {
+            display: flex;
+            justify-content: space-between;
+            width: 30%;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 4px 10px 0px #00000040;
+            background-color: #ffffff;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1c1c1ccc;
+            /* margin-top: 2%; */
+            /* margin-left: 10%; */
+        }
+
+        .members,
+        .New-members {
+            width: 45%;
+            height: 24px;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 21.6px;
+            color: #4d4d4d;
+            cursor: pointer;
+            transition: color 0.3s, border-bottom 0.3s;
+        }
+
+        .members:hover,
+        .New-members:hover {
+            border-bottom: 2px solid #0d6efd;
+            color: #0d6efd;
+        }
+
+        .members.active,
+        .New-members.active {
+            border-bottom: 2px solid #0d6efd !important;
+            color: #0d6efd !important;
+            background-color: #fff !important;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .container {
+            /* width: 60%; */
+            height: 87%;
+            padding: 20px;
+            margin: 20px 0 0;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px 0px #00000040;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin: 0;
+            color: #007bff;
+        }
+
+        h3 {
+            margin: 10px 0;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        /* Form Styling */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        #screenSearch {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 98.5%;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        #screenSearch:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            font-size: 1.2em;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #screensContainer {
+            margin-top: 10px;
+        }
+
+        .screen-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .screen-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+
+        .screen-item label {
+            font-size: 1em;
+            color: #333;
+        }
+
+        #screenSearch {
+            width: 98.5%;
+            margin-bottom: 10px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+            font-size: 1.1em;
+        }
+
+        td {
+            font-size: 1em;
+            color: #555;
+        }
+
+        td a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        td a:hover {
+            text-decoration: underline;
+        }
+
+        button[type="submit"] {
+            background-color: #007BFF;
+            color: white;
+            font-size: 21px;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 50%;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #c82333;
+        }
+
+        /* Scrollbar styling for screens container */
+        #screensContainer {
+            max-height: 235px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        #screensContainer::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #screensContainer::-webkit-scrollbar-thumb {
+            background-color: #007bff;
+            border-radius: 10px;
+        }
+
+        #screensContainer::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
+        }
+
+        @media (max-height: 866px) {
+            h1 {
+                text-align: center;
+                font-size: 2em;
+                margin: 0;
+                color: #007bff;
+            }
+
+            form {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            #screensContainer {
+                max-height: 215px;
+                overflow-y: auto;
+                padding-right: 10px;
+            }
+
+            .container {
+                height: 85%;
+            }
+        }
+
+        @media (max-height: 832px) {
+            #screensContainer {
+                max-height: 170px;
+                overflow-y: auto;
+                padding-right: 10px;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                width: 90%;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            table {
+                width: 100%;
+            }
+
+            button {
+                font-size: 1.1em;
+                padding: 10px;
+            }
+
+            button[type="submit"] {
+                font-size: 1.1em;
+                padding: 8px 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('Dashboard') %>
+        <div class="teams">
+            <div class="member">
+                <div class="members" id="members">Users</div>
+                <div class="New-members active" id="newMembers">New User</div>
+            </div>
+
+            <script>
+                document
+                    .getElementById("members")
+                    .addEventListener("click", function () {
+                        window.location.href = "/society/users";
+                    });
+                document
+                    .getElementById("newMembers")
+                    .addEventListener("click", function () {
+                        window.location.href = "/society/register";
+                    });
+            </script>
+
+            <div class="container" style="display: block">
+                <h1>Register</h1>
+                <form action="/society/register" method="POST">
+                    <label for="userid">User ID:</label>
+                    <input type="text" id="userid" name="userid" required />
+
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required />
+
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required />
+
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required />
+
+                    <h3>Select Screens:</h3>
+                    <input type="text" id="screenSearch" placeholder="Search by Screen ID or Name"
+                        onkeyup="filterScreens()" />
+
+                    <div id="screensContainer">
+                        <% screens.forEach(screen=> { %>
+                            <div class="screen-item">
+                                <input type="checkbox" name="screenids" value="<%= screen.screenid %>" />
+                                <label style="margin: 0">Screen ID: <%= screen.screenid %>, <%= screen.screenname %>
+                                </label>
+                            </div>
+                            <% }) %>
+                    </div>
+
+                    <button type="submit">Register</button>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            function filterScreens() {
+                const searchValue = document
+                    .getElementById("screenSearch")
+                    .value.toLowerCase();
+                const screens = document.querySelectorAll(".screen-item");
+
+                screens.forEach((screen) => {
+                    const screenText = screen.textContent.toLowerCase();
+                    if (screenText.includes(searchValue)) {
+                        screen.style.display = "";
+                    } else {
+                        screen.style.display = "none";
+                    }
+                });
+            }
+        </script>
+</body>
+
+</html>

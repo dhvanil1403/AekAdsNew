@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Playlist</title>
+    <link rel="icon" type="image/png"
+        href="https://res.cloudinary.com/dqfnwh89v/image/upload/v1724408615/qxvvfcf7ftgklhl2k03v.png">
+    <link rel="stylesheet" href="/css/newPlaylist.css">
+    <link rel="stylesheet" href="/css/font.css" />
+
+    <style>
+        .mainn {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .mainn input[type="text"] {
+            width: calc(50% - 5px);
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .mainm label {
+            width: 100%;
+            font-size: 14px;
+        }
+
+        /* Global styles */
+        body {
+            background-color: #f1faff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: auto;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Form styling */
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #444;
+        }
+
+
+
+        /* Checkboxes and input group styling */
+        .form-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+
+
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+        }
+
+
+        .form-container {
+            width: 100%;
+            /* max-width: 600px; */
+            /* margin: 1px auto; */
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            /* height: 80vh; */
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            margin-bottom: 10px;
+            width: 30%;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #9d9d9d;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] {
+            margin-bottom: 10px;
+            /* width: 60%; */
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #9d9d9d;
+            cursor: pointer;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .show-media {
+            display: flex;
+            flex-wrap: wrap;
+            overflow-y: auto;
+            overflow-x: hidden;
+            /* margin-top: 15px; */
+            justify-content: space-evenly;
+        }
+
+        .media-sidebar {
+            width: 21%;
+        }
+
+        .main {
+            width: 100%;
+            margin-top: 0.5%;
+            display: flex;
+            gap: 1%;
+        }
+
+        .header button {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="newPlaylist">
+        <div class="header">
+            <button2 onclick="exitfunction()">Exit</button2>
+            <!-- <button id="selectScreenButton">Select Screen</button> -->
+            <!-- <button id="selectScreenButton" type="button">Select Screen</button> -->
+
+            <!-- Button to Trigger Form Submission -->
+            <button id="selectScreenButton" type="button">Select Screen</button>
+
+
+
+
+        </div>
+        <div class="main">
+            <div class="media-sidebar">
+                <div class="show-media">
+                    <% mediafiles.forEach(function (file) { %>
+                        <div class="media-container">
+                            <% if (file.type && file.type.startsWith('image/')) { %>
+                                <img src="<%= file.url %>" alt="Image" class="media-item image-item"
+                                    data-layout-name="<%= file.filename %>" data-duration="<%= file.durationString %>"
+                                    data-size="<%= file.size %>">
+                                <% } else if (file.type && file.type.startsWith('video/')) { %>
+                                    <div class="video-wrapper">
+                                        <video class="media-item video-item" preload="metadata"
+                                            data-layout-name="<%= file.filename %>"
+                                            data-duration="<%= file.durationString %>" data-size="<%= file.size %>">
+                                            <source src="<%= file.url %>" type="<%= file.type %>">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                        <div class="video-name-overlay">
+                                            <%= file.filename %>
+                                        </div>
+                                    </div>
+                                    <% } else { %>
+                                        <p>Unsupported file type: <%= file.type %>
+                                        </p>
+                                        <% } %>
+                        </div>
+                        <% }); %>
+                </div>
+
+                <style>
+                    /* Ensure the video wrapper is positioned correctly */
+                    .video-wrapper {
+                        position: relative;
+                        display: inline-block;
+                        width: 100%;
+                        /* Adjust as needed */
+                        max-width: 500px;
+                        /* Example max width */
+                    }
+
+                    /* Styling for the filename overlay */
+                    .video-name-overlay {
+                        position: absolute;
+                        bottom: 10px;
+                        left: 10px;
+                        background-color: rgba(0, 0, 0, 0.7);
+                        color: white;
+                        padding: 5px;
+                        border-radius: 4px;
+                        opacity: 0;
+                        transition: opacity 0.3s;
+                        pointer-events: none;
+                        font-size: 14px;
+                    }
+
+                    /* Show the overlay on hover */
+                    .video-wrapper:hover .video-name-overlay {
+                        opacity: 1;
+                    }
+                </style>
+            </div>
+
+
+            <div class="form-container">
+                <div id="liveForm">
+                    <label>Note: Please Select Any One *</label>
+                    <br><br>
+                    <div>
+                        <label for="clock">Clock:
+                        <input type="checkbox" id="clock" name="clock"></label>
+                    </div>
+                    <br><br>
+
+                    <div>
+                        <label for="weather">Weather:
+                        <input type="checkbox" id="weather" name="weather"></label>
+                    </div>
+                    <br>
+
+                    <div id="clock_runtime_group" style="display: none;">
+                        <label for="clockRuntime" style="display: none;">Clock Runtime (seconds):</label>
+                        <input type="number" id="clockRuntime" name="clockRuntime" style="display: none;">
+                    </div>
+                    <br>
+
+                    <div>
+                        <label for="youtube_live">YouTube Live:
+                        <input type="checkbox" id="youtube_live" name="youtube_live"></label>
+                    </div>
+                    <div id="youtube_live_link_group" style="display: none;">
+                     
+                        <input type="text" id="youtube_live_link" name="youtube_live_link"
+                            placeholder="Enter YouTube Live Id From YouTube">
+                    </div>
+
+                    <br><br>
+
+                    <div>
+                        <label for="exoplayer">ExoPlayer:
+                        <input type="checkbox" class="exoplayerR" id="exoplayer" name="exoplayer"></label>
+                    </div>
+                    <br>
+                    <!-- <div id="exoPlayerBoxContainer" id="exoplayer_link_group"  style="display: none;"></div> -->
+                    <div class="exoPlayerBoxContainer" id="exoplayer_link_group" style="display: none;"></div>
+
+
+                    <!-- <div id="exoplayer_link_group" style="display: none;">
+                        <label for="exoplayer_link">ExoPlayer Link:</label>
+                        <input type="text" id="exoplayer_link" name="exoplayer_link" placeholder="Enter ExoPlayer Link">
+                    </div> -->
+                    <br>
+
+
+                    <br>
+
+
+
+
+                    <br>
+
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </div>
+    <script>
+
+
+
+
+        function exitfunction() {
+            if (confirm("Are you sure you want to exit and discard changes?")) {
+                window.history.back();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Select all relevant elements
+            const clockCheckbox = document.getElementById('clock');
+            const clockRuntimeGroup = document.getElementById('clock_runtime_group');
+            const clockRuntimeInput = document.getElementById('clockRuntime');
+            const weatherCheckbox = document.getElementById('weather');
+            const youtubeLiveCheckbox = document.getElementById('youtube_live');
+            const youtubeLiveLinkGroup = document.getElementById('youtube_live_link_group');
+            const youtubeLiveLink = document.getElementById('youtube_live_link');
+            const exoplayerCheckbox = document.getElementById('exoplayer');
+            const exoplayerLinkGroup = document.getElementById('exoplayer_link_group');
+            const exoplayerLink = document.getElementById('exoplayer_link');
+            const selectScreenButton = document.getElementById('selectScreenButton');
+
+            // Function to reset all fields and hide their values
+            function resetFields() {
+                youtubeLiveLinkGroup.style.display = 'none';
+                youtubeLiveLink.value = ''; // Clear value
+                exoplayerLinkGroup.style.display = 'none';
+                exoplayerLink.value = ''; // Clear value
+            }
+
+            // Function to reset all checkboxes
+            function resetCheckboxes(exceptCheckbox) {
+                const checkboxes = [clockCheckbox, weatherCheckbox, youtubeLiveCheckbox, exoplayerCheckbox];
+                checkboxes.forEach(function (checkbox) {
+                    if (checkbox !== exceptCheckbox) {
+                        checkbox.checked = false;
+                    }
+                });
+            }
+
+            // Show/Hide Clock Runtime input based on Clock checkbox
+            clockCheckbox.addEventListener('change', function () {
+                resetCheckboxes(clockCheckbox); // Reset other checkboxes when Clock is checked
+                clockRuntimeGroup.style.display = clockCheckbox.checked ? 'block' : 'none';
+                if (!clockCheckbox.checked) {
+                    clockRuntimeInput.value = ''; // Clear runtime if Clock is unchecked
+                }
+            });
+
+            // Ensure only one of YouTube Live or ExoPlayer can be selected
+            youtubeLiveCheckbox.addEventListener('change', function () {
+                // Reset all other checkboxes except YouTube Live
+                resetCheckboxes(youtubeLiveCheckbox);
+
+                // Show or hide the YouTube Live Link field
+                youtubeLiveLinkGroup.style.display = youtubeLiveCheckbox.checked ? 'block' : 'none';
+
+                // Clear YouTube Live Link input if checkbox is unchecked
+                if (!youtubeLiveCheckbox.checked) {
+                    youtubeLiveLink.value = ''; // Clear input when unchecked
+                }
+            });
+
+
+
+
+            exoplayerCheckbox.addEventListener('change', function () {
+                resetCheckboxes(exoplayerCheckbox); // Reset other checkboxes when ExoPlayer is checked
+                if (exoplayerCheckbox.checked) {
+                    youtubeLiveLink.value = ''; // Clear YouTube Live link
+                    youtubeLiveLinkGroup.style.display = 'none'; // Hide YouTube Live link
+                }
+                exoplayerLinkGroup.style.display = exoplayerCheckbox.checked ? 'block' : 'none'; // Show/Hide ExoPlayer link
+                if (!exoplayerCheckbox.checked) {
+                    exoplayerLink.value = ''; // Clear ExoPlayer link if unchecked
+                }
+            });
+
+            weatherCheckbox.addEventListener('change', function () {
+                resetCheckboxes(weatherCheckbox); // Reset other checkboxes when Weather is checked
+            });
+
+            // Submit Button Logic
+            selectScreenButton.addEventListener('click', function () {
+                // Retrieve the selected video link from session storage
+                const selectedVideoLink = sessionStorage.getItem('selectedVideoLink') || '';
+
+                // Collect form data
+                const formData = {
+                    clock: clockCheckbox.checked,
+                    clockRuntime: clockCheckbox.checked
+                        ? parseInt(clockRuntimeInput.value.trim()) || null
+                        : null,
+                    weather: weatherCheckbox.checked,
+                    youtube_live: youtubeLiveCheckbox.checked,
+                    youtube_live_link: youtubeLiveCheckbox.checked
+                        ? youtubeLiveLink.value.trim()
+                        : null,
+                    exoplayer: exoplayerCheckbox.checked,
+                    exoplayer_link: exoplayerCheckbox.checked
+                        // ? JSON.parse(sessionStorage.getItem('selectedVideoLinks')) || []
+                        // : [], // Retrieve all video links from session storage
+                        ? JSON.parse(sessionStorage.getItem('selectedVideoLinks')) || [] // Retrieve all video links from session storage
+                        : [],
+                };
+
+                // Check if any checkbox is selected (clock, weather, youtube_live, or exoplayer)
+                const isAnySelected = formData.clock || formData.weather || formData.youtube_live || formData.exoplayer;
+
+                // Prevent navigation if no checkbox is selected
+                if (!isAnySelected) {
+                    alert('Please select at least one option.');
+                    return;
+                }
+
+                // Validate YouTube Live link
+                if (formData.youtube_live && !formData.youtube_live_link) {
+                    alert('Please provide a valid YouTube Live link.');
+                    return;
+                }
+
+                // Debug: Log form data
+                console.log('Form Data:', formData);
+
+                // Store data in session storage
+                sessionStorage.setItem('formData', JSON.stringify(formData));
+
+                // Redirect to the next page
+                window.location.href = '/Dashboard/LiveContent/liveLink/selectlivescreens';
+
+
+            });
+
+        });
+
+
+
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const exoPlayerCheckbox = document.getElementById('exoplayer');
+            const exoPlayerBoxContainer = document.getElementsByClassName('exoPlayerBoxContainer')[0];  // Get the first container
+            let boxCounter = 0;
+
+            // Toggle ExoPlayer mini-box visibility
+            exoPlayerCheckbox.addEventListener('change', () => {
+                if (exoPlayerCheckbox.checked) {
+                    exoPlayerBoxContainer.style.display = 'flex';
+                    createBox(); // Add the first box automatically
+                    createBox(); // Add the second box automatically
+                } else {
+                    exoPlayerBoxContainer.style.display = 'none';
+                    exoPlayerBoxContainer.innerHTML = ''; // Clear all mini-boxes
+                    boxCounter = 0; // Reset counter
+                }
+            });
+
+            // Function to create a new mini-box
+            function createBox() {
+                boxCounter++;
+                const miniBox = document.createElement('div');
+                miniBox.className = 'mini-box';
+                miniBox.setAttribute('data-box-id', boxCounter); // Unique ID for the box
+
+                miniBox.innerHTML = `
+            <div class="mini-box-header">Add ${boxCounter}</div>
+            <div class="mini-box-content">
+                <div class="selected-videos"></div>
+            </div>
+            <div class="mini-box-actions">
+                <button class="add-video-btn">Add</button>                    
+                <button class="remove-video-btn">Remove</button>            
+            </div>
+        `;
+
+                exoPlayerBoxContainer.appendChild(miniBox);
+
+                // Attach event listeners for buttons
+                const addButton = miniBox.querySelector('.add-video-btn');
+                const removeButton = miniBox.querySelector('.remove-video-btn');
+
+                // Handle video selection for this specific box
+                addButton.addEventListener('click', () => {
+                    enableVideoSelection(miniBox);
+                });
+
+                // Remove the selected video on click
+                removeButton.addEventListener('click', () => {
+                    const selectedVideosContainer = miniBox.querySelector('.selected-videos');
+                    selectedVideosContainer.innerHTML = ''; // Clear the selected video
+                });
+            }
+
+            // Function to enable video selection for a specific box
+            function enableVideoSelection(miniBox) {
+                const selectedVideosContainer = miniBox.querySelector('.selected-videos');
+                const boxId = miniBox.getAttribute('data-box-id'); // Unique box ID
+
+                // Prevent video selection if a video is already selected
+                if (selectedVideosContainer.innerHTML !== '') {
+                    alert('This box already has a selected video.');
+                    return;
+                }
+
+                // Clear previously selectable states
+                document.querySelectorAll('.video-item').forEach(video => {
+                    video.classList.remove('selectable');
+                    video.removeEventListener('click', video._handleVideoSelection);
+                });
+
+                // Highlight selectable videos
+                document.querySelectorAll('.video-item').forEach(video => {
+                    video.classList.add('selectable'); // Highlight videos as selectable
+
+                    // Define the click handler for this video
+                    const handleVideoSelection = () => {
+                        const videoUrl = video.querySelector('source').src;
+                        const videoName = video.dataset.layoutName;
+                        const videoDuration = video.dataset.duration;
+
+                        // Show selected video in the specific box
+                        const videoPreview = document.createElement('div');
+                        videoPreview.className = 'video-preview';
+                        videoPreview.innerHTML = `
+                <video src="${videoUrl}" controls width="150"></video>
+                <p>${videoName} (${videoDuration})</p>
+            `;
+                        selectedVideosContainer.innerHTML = ''; // Ensure only one video is displayed
+                        selectedVideosContainer.appendChild(videoPreview);
+
+                        // Update session storage with video link for this box
+                        let selectedVideoLinks = JSON.parse(sessionStorage.getItem('selectedVideoLinks')) || [];
+                        selectedVideoLinks[boxId - 1] = videoUrl; // Use boxId as the index
+                        sessionStorage.setItem('selectedVideoLinks', JSON.stringify(selectedVideoLinks));
+
+                        // Disable selection for other videos
+                        document.querySelectorAll('.video-item').forEach(v => {
+                            v.classList.remove('selectable');
+                            v.removeEventListener('click', v._handleVideoSelection); // Remove click event
+                        });
+                    };
+
+                    // Attach the click event listener to the current video
+                    video.addEventListener('click', handleVideoSelection, { once: true });
+
+                    // Store the handler for cleanup
+                    video._handleVideoSelection = handleVideoSelection;
+                });
+            }
+
+
+        });
+
+
+
+
+
+    </script>
+
+    <style>
+        .exo-player-box-container {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .mini-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 230px;
+            background-color: #f9f9f9;
+            margin-bottom: 15px;
+            border-radius: 15px;
+        }
+
+        .mini-box-actions {
+            display: flex;
+            justify-content: space-evenly;
+        }
+
+        .selected-videos {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .video-preview {
+            display: inline-block;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .video-item.selectable {
+            outline: 2px solid #0d6efd;
+            cursor: pointer;
+        }
+
+        .video-preview video {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 60%;
+        }
+
+        .add-video-btn {
+            background-color: #0d6efd;
+            border-radius: 15px;
+        }
+
+        .remove-video-btn {
+            background-color: rgb(220, 53, 69);
+            border-radius: 15px;
+        }
+
+        .exoPlayerBoxContainer {
+            gap: 2%;
+            /* justify-content: space-evenly; */
+        }
+    </style>
+
+</body>
+
+</html>

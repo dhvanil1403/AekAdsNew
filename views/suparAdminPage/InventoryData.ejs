@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management</title>
+  <style>
+   
+   
+    
+  </style>
+</head>
+<body>
+  <%- include('suparAdmin_layout') %>
+
+  <div class="container">
+    <h1>SuparAdmin  InventoryData</h1>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>product_name</th>
+            <th>product_description</th>
+            <th>quantity</th>
+            <th>price</th>
+            <th>product_tag </th>
+            <th>date_added </th>
+          </tr>
+        </thead>
+        <tbody>
+          <% inventoryData.forEach((row) => { %>
+            <tr>
+              <td><%= row.product_name %></td>
+              <td><%= row.product_description %></td>
+              <td><%= row.quantity %></td>
+              <td><%= row.price %></td>
+              <td><%= row.product_tag %></td>
+              <td><%= row.date_added %></td>
+             
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>                      
+  </div>
+</body>                                                                         
+</html>             
+                                             
+                                                                                
+                                                                                 

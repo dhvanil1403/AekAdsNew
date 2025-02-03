@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Proposal</title>
+
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            margin-top: 17px;
+        }
+
+        .modal {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            width: 100%;
+            max-width: 1320px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .close-button:hover {
+            color: #ff0000;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            /* font-size: 1.1rem; */
+            font-weight: 500;
+            color: var(--black-80, #1C1C1CCC);
+        }
+
+        /* .form-label {
+            font-weight: 500;
+            color: var(--black-80, #1C1C1CCC);
+        } */
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+        }
+
+        .form-actions {
+            /* display: flex; */
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .form-actions button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .form-actions .goback {
+            background-color: #ffc107;
+            color: #333;
+        }
+
+        .form-actions .goback:hover {
+            background-color: #fdcd3e;
+        }
+
+        .form-actions .next {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .form-actions .next:hover {
+            background-color: #0056b3;
+        }
+
+        .type-button {
+            margin: 1px 1px;
+            width: 100%;
+            display: flex;
+            gap: -2px;
+        }
+
+        .type-button button.dark {
+            background: rgba(13, 110, 253, 1);
+            color: rgba(255, 255, 255, 1);
+        }
+
+        .type-button button {
+            width: 100%;
+            height: 4vh;
+            border: 0.75px solid rgba(13, 110, 253, 1);
+            color: rgba(13, 110, 253, 1);
+        }
+
+        .stepper {
+            margin: 17px 1px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .step-number {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 23px;
+            height: 23px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            color: #666;
+            font-weight: 600;
+            font-size: 14px;
+            margin-right: 15px;
+        }
+
+        .step-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .step.active .step-number {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 52%;
+            left: calc(100% + 13px);
+            transform: translateY(-50%);
+            width: 45px;
+            height: 3px;
+            background-color: #e0e0e0;
+        }
+
+        @media (max-width:1200px) {
+            .step:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                top: 52%;
+                left: calc(100% + 2px);
+                transform: translateY(-50%);
+                width: 19px;
+                height: 3px;
+                background-color: #e0e0e0;
+            }
+        }
+
+        @media (min-width: 1300px) and (max-width: 1400px) {
+            .step:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                top: 52%;
+                left: calc(100% + 7px);
+                transform: translateY(-50%);
+                width: 33px;
+                height: 3px;
+                background-color: #e0e0e0;
+            }
+        }
+
+        .step.active~.step .step-number {
+            background-color: #e0e0e0;
+            color: #666;
+        }
+
+        .step.active~.step .step-label {
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            .stepper {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px;
+            }
+
+            .step {
+                margin-bottom: 20px;
+            }
+
+            .step:not(:last-child)::after {
+                display: none;
+            }
+
+            .step-number {
+                width: 25px;
+                height: 25px;
+                font-size: 12px;
+            }
+
+            .step-label {
+                font-size: 12px;
+            }
+        }
+
+        .custom-file-upload {
+            width: 200px;
+            border: 1px solid #007bff;
+            gap: 10px;
+            display: inline-block;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 6%;
+            background-color: #fff;
+            color: #007bff;
+            font-size: 16px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        #uploadButton {
+            display: none;
+        }
+
+        .media-preview {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 582px) {
+            .media-preview {
+                justify-content: center;
+            }
+        }
+
+        .file-preview {
+            width: 20%;
+            height: 260px;
+            /* height: 125px; */
+            position: relative;
+            /* border: 1px solid #ddd; */
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 10px;
+            /* background-color: #f0f0f0; */
+        }
+
+        .file-preview.empty {
+            background-color: #e9ecef;
+        }
+
+        .preview-image,
+        .preview-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .delete-button {
+            position: absolute;
+            z-index: 5;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        @media(max-width:1100px) {
+            .stepper {
+                display: none;
+            }
+
+            .card-title {
+                margin-bottom: 15%;
+            }
+        }
+
+        textarea {
+            resize: none;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <div class="modal">
+        <div class="modal-header">
+            <h5 class="card-title" style="font-size: 20px; color: #202224; opacity: 90%; font-weight: 500;">SUBMIT
+                PROPOSAL</h5>
+            <!-- <button class="close-button">&times;</button> -->
+        </div>
+        <div class="stepper">
+
+            <div class="step">
+                <div class="step-number">
+                    <svg width="23" height="23" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="16.5" cy="16.5" r="15.75" fill="white" stroke="#0D6EFD" stroke-width="1.5" />
+                        <path d="M25 12L14 23L9 18" stroke="#0D6EFD" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="step-label">Basic Details</div>
+            </div>
+            <div class="step">
+                <div class="step-number">
+                    <svg width="23" height="23" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="16.5" cy="16.5" r="15.75" fill="white" stroke="#0D6EFD" stroke-width="1.5" />
+                        <path d="M25 12L14 23L9 18" stroke="#0D6EFD" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="step-label">Targets</div>
+            </div>
+            <div class="step">
+                <div class="step-number">
+                    <svg width="23" height="23" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="16.5" cy="16.5" r="15.75" fill="white" stroke="#0D6EFD" stroke-width="1.5" />
+                        <path d="M25 12L14 23L9 18" stroke="#0D6EFD" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="step-label">POP Instruction</div>
+            </div>
+            <div class="step">
+                <div class="step-number">
+                    <svg width="23" height="23" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="16.5" cy="16.5" r="15.75" fill="white" stroke="#0D6EFD" stroke-width="1.5" />
+                        <path d="M25 12L14 23L9 18" stroke="#0D6EFD" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="step-label">Pricing</div>
+            </div>
+            <div class="step">
+                <div class="step-number">
+                    <svg width="23" height="23" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="16.5" cy="16.5" r="15.75" fill="white" stroke="#0D6EFD" stroke-width="1.5" />
+                        <path d="M25 12L14 23L9 18" stroke="#0D6EFD" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="step-label">Finance</div>
+            </div>
+            <div class="step">
+                <div class="step-number">
+                    <svg width="23" height="23" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="16.5" cy="16.5" r="15.75" fill="white" stroke="#0D6EFD" stroke-width="1.5" />
+                        <path d="M25 12L14 23L9 18" stroke="#0D6EFD" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="step-label">Client POC</div>
+            </div>
+            <div class="step active">
+                <div class="step-number">7</div>
+                <div class="step-label">Creatives</div>
+            </div>
+            <div class="step">
+                <div class="step-number">8</div>
+                <div class="step-label">Summary</div>
+            </div>
+        </div>
+        <form id="creativeUploadForm">
+            <p id="proposalID" style="display: none;">
+                <%= proposalID %>
+            </p>
+            <p id="client_name" style="display: none;">
+                <%= selectedProposal.client_name %>
+            </p>
+            <!-- <div class="form-group">
+                <label for="type">Type:</label>
+                <div class="type-button">
+                    <button type="button" class="dark">Image/Gif</button>
+                    <button type="button">Videos</button>
+                    <button type="button">Web</button>
+                </div>
+            </div> -->
+
+            <div class="form-group">
+                <label class="media">Media:</label>
+                <label for="uploadButton" class="custom-file-upload">
+                    Click to upload
+                </label>
+                <input type="file" id="uploadButton" name="media" multiple accept=".mp4">
+
+            </div>
+
+            <!-- Media Preview Section -->
+            <div id="mediaPreview" class="media-preview">
+
+            </div>
+
+            <div class="form-group">
+                <label for="creative-instruction">Creative Instruction</label>
+                <textarea id="creativeInstruction" name="creative_instruction"
+                    rows="4"><%= selectedProposal.creative_instruction %></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" onclick="goBack()" class="goback">Go Back</button>
+                <button type="submit" class="next">Next</button>
+            </div>
+        </form>
+
+    </div>
+
+    <script>
+        window.goBack = function () {
+        window.history.back();
+    };
+    document.addEventListener('DOMContentLoaded', function () {
+    const mediaPreview = document.getElementById('mediaPreview');
+    const uploadButton = document.getElementById('uploadButton');
+    const MAX_FILES = 4; // Limit to exactly 4 videos
+    const MAX_FILE_SIZE_MB = 50; // Maximum file size in MB
+    const MAX_DURATION_SEC = 15; // Maximum video duration in seconds
+
+    let newFiles = [];  // Only track new files, no existing files
+
+    // Update file count dynamically
+    function updateFileCount() {
+        const count = newFiles.length;
+        console.log("Current file count:", count);
+        return count;
+    }
+
+    // Validate file type (only video files allowed)
+    function isValidFileType(file) {
+        const isValid = file.type.startsWith('video/');
+        console.log(`Validating file type for "${file.name}": ${isValid}`);
+        return isValid;
+    }
+
+    // Validate file size (up to MAX_FILE_SIZE_MB)
+    function isValidFileSize(file) {
+        const sizeMB = file.size / (1024 * 1024);
+        const isValid = sizeMB <= MAX_FILE_SIZE_MB;
+        console.log(`Validating file size for "${file.name}": Size = ${sizeMB.toFixed(2)} MB, Valid = ${isValid}`);
+        return isValid;
+    }
+
+    // Validate video duration (up to MAX_DURATION_SEC)
+    function isValidDuration(file, callback) {
+        const video = document.createElement('video');
+        video.preload = 'metadata';
+        video.src = URL.createObjectURL(file);
+
+        video.onloadedmetadata = function () {
+            URL.revokeObjectURL(video.src); // Release memory
+            const duration = video.duration;
+            const isValid = duration <= MAX_DURATION_SEC;
+            console.log(`Validating duration for "${file.name}": Duration = ${duration.toFixed(2)} seconds, Valid = ${isValid}`);
+            callback(isValid);
+        };
+
+        video.onerror = function () {
+            console.error(`Error loading metadata for "${file.name}".`);
+            callback(false);
+        };
+    }
+
+    // Handle file removal dynamically
+    function handleFileRemoval(filePreview, fileUrl) {
+        filePreview.querySelector('.delete-button').addEventListener('click', function () {
+            console.log(`Removing file: ${fileUrl}`);
+            mediaPreview.removeChild(filePreview);
+
+            // Remove from newFiles
+            const index = newFiles.findIndex(file => URL.createObjectURL(file) === fileUrl);
+            if (index > -1) {
+                newFiles.splice(index, 1);
+            }
+
+            // Re-enable the upload button if the file count is less than MAX_FILES
+            if (newFiles.length < MAX_FILES) {
+                uploadButton.disabled = false; // Allow uploading more files
+            }
+        });
+    }
+
+    // File upload event handler
+    uploadButton.addEventListener('change', function () {
+        const selectedFiles = Array.from(uploadButton.files);
+        console.log("Selected files for upload:", selectedFiles);
+
+        if (newFiles.length + selectedFiles.length > MAX_FILES) {
+            console.warn("Too many files selected. Max limit exceeded.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'You can only upload a maximum of 4 videos.',
+                confirmButtonText: 'Okay'
+            });
+            return;
+        }
+
+        selectedFiles.forEach(file => {
+            console.log(`Processing file: ${file.name}`);
+
+            // Validate file type, size, and duration
+            if (!isValidFileType(file)) {
+                console.warn(`Invalid file type: ${file.name}`);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Only video files are allowed.',
+                    confirmButtonText: 'Okay',
+                });
+                return;
+            }
+
+            if (!isValidFileSize(file)) {
+                console.warn(`File size too large: ${file.name}`);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: `File size must not exceed ${MAX_FILE_SIZE_MB}MB.`,
+                    confirmButtonText: 'Okay',
+                });
+                return;
+            }
+
+            // Validate video duration
+            isValidDuration(file, (isValid) => {
+                if (!isValid) {
+                    console.warn(`Video duration too long: ${file.name}`);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Video duration must not exceed 15 seconds.',
+                        confirmButtonText: 'Okay'
+                    });
+                    return;
+                }
+
+                // Add the file to the newFiles array after validation
+                newFiles.push(file);
+
+                console.log("File passed all validations:", file.name);
+                const filePreview = document.createElement('div');
+                filePreview.classList.add('file-preview');
+                mediaPreview.appendChild(filePreview);
+
+                // Create video element
+                const video = document.createElement('video');
+                video.classList.add('preview-video');
+                video.src = URL.createObjectURL(file);
+                video.controls = true;
+                filePreview.appendChild(video);
+
+                // Create delete button for file removal
+                const deleteButton = document.createElement('button');
+                deleteButton.innerText = 'X';
+                deleteButton.classList.add('delete-button');
+                filePreview.appendChild(deleteButton);
+
+                // Create video type dropdown with "No" as default option
+                const videoTypeSelect = document.createElement('select');
+                videoTypeSelect.classList.add('video-type-select');
+                videoTypeSelect.innerHTML = `
+                    <option value="no">No</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="kids">Kids</option>
+                `;
+                videoTypeSelect.style.display = 'none'; // Hide the dropdown
+                filePreview.appendChild(videoTypeSelect);
+
+                // Create age range dropdown
+                const ageRangeSelect = document.createElement('select');
+                ageRangeSelect.classList.add('age-range-select');
+                ageRangeSelect.innerHTML = `
+                    <option value="0">0</option>
+                    <option value="1-18">1-18</option>
+                    <option value="19-40">19-40</option>
+                    <option value="up-to-40">Up to 40</option>
+                `;
+                ageRangeSelect.style.display = 'none'; // Hide the dropdown
+                filePreview.appendChild(ageRangeSelect);
+
+                // Handle file removal
+                handleFileRemoval(filePreview, video.src);
+
+                // Disable the upload button if the file count reaches MAX_FILES
+                if (newFiles.length === MAX_FILES) {
+                    uploadButton.disabled = true;
+                    console.log("Upload button disabled. Max files uploaded.");
+                }
+            });
+        });
+
+        uploadButton.value = ''; // Reset the file input
+    });
+
+    // Handle form submission
+    document.getElementById('creativeUploadForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        console.log("Submitting form...");
+
+        // Ensure exactly 4 files are uploaded
+        if (updateFileCount() !== MAX_FILES) {
+            console.warn("Form submission blocked. Less than 4 files uploaded.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `You must upload exactly ${MAX_FILES} videos.`,
+                confirmButtonText: 'Okay',
+            });
+            return;
+        }
+
+        const formData = new FormData();
+        
+        // Only append new files
+        newFiles.forEach((file, index) => {
+            const videoType = document.querySelectorAll('.video-type-select')[index].value;
+            const ageRange = document.querySelectorAll('.age-range-select')[index].value;
+            console.log(`New file: ${file.name}, Video Type: ${videoType}, Age Range: ${ageRange}`);
+
+            formData.append('newFiles', file);
+            formData.append(`videoType_${index}`, videoType);  // Include video type
+            formData.append(`ageRange_${index}`, ageRange);    // Include age range
+        });
+
+        const creativeInstruction = document.getElementById('creativeInstruction').value.trim();
+        const proposalID = document.getElementById('proposalID').innerText.trim();
+        const client_name = document.getElementById('client_name').innerText.trim();
+
+        formData.append('creativeInstruction', creativeInstruction);
+        formData.append('proposalID', proposalID);
+        formData.append('client_name', client_name);
+
+        console.log("Form data prepared:", {
+            newFiles,
+            creativeInstruction,
+            proposalID,
+            client_name
+        });
+
+        Swal.fire({
+            title: 'Uploading...',
+            text: 'Please wait while your files are being uploaded.',
+            didOpen: () => Swal.showLoading(),
+        });
+
+        try {
+            const response = await fetch('/proposals/creativeUploadEdittedSubmit', {
+                method: 'POST',
+                body: formData,
+            });
+            const result = await response.json();
+
+            if (response.ok) {
+                console.log("Files uploaded successfully:", result);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Your files have been uploaded successfully!',
+                    confirmButtonText: 'Okay',
+                }).then(() => {
+                    window.location.href = `/proposals`;
+                });
+            } else {
+                console.error("Upload error:", result);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'There was a problem uploading your files. Please try again.',
+                    confirmButtonText: 'Okay',
+                });
+            }
+        } catch (error) {
+            console.error("Unexpected submission error:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'An unexpected error occurred. Please try again later.',
+                confirmButtonText: 'Okay',
+            });
+        }
+    });
+});
+
+  
+
+
+
+    </script>
+
+
+
+
+
+</body>
+
+</html>

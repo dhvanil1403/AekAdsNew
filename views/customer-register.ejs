@@ -1,0 +1,251 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register</title>
+    <link rel="stylesheet" href="/css/teams.css" />
+    <link rel="stylesheet" href="/css/screen.css" />
+    <link rel="stylesheet" href="/css/playlist.css" />
+    <!-- <link rel="stylesheet" href="/css/font.css" /> -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </head>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table th,
+    table td {
+      padding: 10px;
+      text-align: center; /* Center the text horizontally */
+    }
+
+    input[type="checkbox"] {
+      transform: scale(1.2); /* Optional: Increase the size of checkboxes */
+      margin: 0 auto; /* Horizontally center the checkboxes */
+      display: block; /* Ensure the checkbox is treated as a block element */
+      position: relative;
+      top: 50%; /* Move the checkbox down by half of its height */
+      transform: translateY(-50%); /* Center the checkbox vertically */
+    }
+
+    .home-team {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px 20px;
+    gap: 9px;
+    width: 160px;
+    height: 30px;
+    left: 239px;
+    top: 42px;
+    background: #ffffff;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 15px;
+    color: var(--black-80, #1c1c1ccc);
+}                                                           
+
+    @media (max-width: 1300px) {
+      .home-team {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 5px 20px;
+        gap: 9px;
+        width: 116px;
+        height: 30px;
+        left: 239px;
+        top: 42px;
+        background: #ffffff;
+        box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 15px;
+        color: var(--black-80, #1c1c1ccc);
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .home-team {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 5px 20px;
+        gap: 9px;
+        width: 93px;
+        height: 30px;
+        left: 239px;
+        top: 42px;
+        background: #ffffff;
+        box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 15px;
+        color: var(--black-80, #1c1c1ccc);
+      }
+    }
+  </style>
+  <body>
+    <%- include('Dashboard') %>
+    <div class="teams">
+      <div class="home-team">
+        <p>Home > <b>Customer</b></p>
+      </div>
+
+      <div class="member">
+        <div class="members" id="members">Customer</div>
+        <div class="New-members" id="newMembers">New Customer</div>
+        <!-- <div class="Logs" id="logs">
+        Logs
+        </div> -->
+      </div>
+      <script>
+        document
+          .getElementById("members")
+          .addEventListener("click", function () {
+            window.location.href = "/customer-list";
+          });
+        document
+          .getElementById("newMembers")
+          .addEventListener("click", function () {
+            window.location.href = "/customer-list";
+          });
+      </script>
+
+      <div class="mainData">
+        <!-- User registration form -->
+        <div class="member-form">
+          <form action="/customer/register" method="POST">
+            <div class="form">
+              <div class="formdata">
+                <label for="name">Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  placeholder="Enter Name"
+                  required
+                />
+              </div>
+
+              <div class="formdata">
+                <label for="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="Enter Email"
+                  required
+                />
+              </div>
+
+              <div class="formdata">
+                <label for="password">Password:</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Enter Password"
+                  required
+                />
+              </div>
+
+              <div class="formdata">
+                <label for="mobile_number">Mobile Number:</label>
+                <input
+                  type="text"
+                  name="mobile_number"
+                  placeholder="Enter Mobile Number"
+                />
+              </div>
+
+              <div class="formdata">
+                <button
+                  type="submit"
+                  style="
+                    color: #fffefe;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 12px;
+                    gap: 9px;
+
+                    margin: 0 auto;
+                    width: 80%;
+                    /* height: 40px; */
+
+                    background: #0d6efd;
+                    border-radius: 12px;
+                    border: none;
+
+                    /* Inside auto layout */
+                    flex: none;
+                    order: 4;
+                    flex-grow: 0;
+                  "
+                >
+                  Register Customer
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Permissions table -->
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent default form submission
+
+          const formData = new FormData(this);
+
+          fetch("/register", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.status === "success") {
+                // Show success alert with SweetAlert
+                Swal.fire({
+                  title: "Success!",
+                  text: data.message,
+                  icon: "success",
+                  confirmButtonText: "OK",
+                }).then(() => {
+                  // Redirect after successful registration
+                  window.location.href = "/Dashboard/Teams/Addmember";
+                });
+              } else {
+                // Show error alert with SweetAlert
+                Swal.fire({
+                  title: "Error!",
+                  text: data.message,
+                  icon: "error",
+                  confirmButtonText: "Try Again",
+                });
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              // Show network error alert with SweetAlert
+              Swal.fire({
+                title: "Error!",
+                text: "An unexpected error occurred.",
+                icon: "error",
+                confirmButtonText: "Try Again",
+              });
+            });
+        });
+    </script>
+  </body>
+</html>

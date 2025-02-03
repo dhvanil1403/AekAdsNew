@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chairman Approval</title>
+  <link rel="stylesheet" href="/css/font.css" />
+  <link rel="stylesheet" href="/css/screen.css" />
+
+  <link rel="icon" type="image/png"
+    href="https://res.cloudinary.com/dqfnwh89v/image/upload/v1724408615/qxvvfcf7ftgklhl2k03v.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <style>
+    body {
+      background-color: #F1FAFF;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .home-chairman {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 5px 20px;
+      gap: 9px;
+      width: 194px;
+      height: 30px;
+      left: 239px;
+      top: 42px;
+      background: #FFFFFF;
+      box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+      border-radius: 15px;
+    }
+    .show-Screen {
+      box-shadow: 0px 4px 10px 0px #00000040;
+      background: #FFFFFF;
+      width: 98%;
+      border-radius: 14px;
+      margin: 1% 0 0;
+      padding: 1%;
+      overflow: hidden;
+      /* height: 80%; */
+    }
+    input[type="search"] {
+      width: 100%;
+      outline: none;
+      color: #1C1C1C;
+      box-shadow: 0px 0px 2px 0px #00000040;
+      border: 0.5px solid #1c1c1c66;
+      margin-top: 4%;
+    }
+    .screens {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      align-items: start;
+      color: #1c1c1ccc;
+      padding: 20px;
+      z-index: 1;
+      overflow: hidden;
+    }
+    /* Button Styling */
+    .video-btn,
+    .approve-btn,
+    .reject-btn,
+    .preview-btn {
+      padding: 8px 12px;
+      margin: 4px;
+      border: none;
+      border-radius: 21px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .video-btn {
+      background-color: #007BFF;
+      color: white;
+    }
+    .video-btn:hover {
+      background-color: #0056B3;
+    }
+    .preview-btn {
+      background-color: #0D6EFD;
+      color: white;
+    }
+    .approve-btn {
+      background-color: #28A745;
+      color: white;
+    }
+    .approve-btn:hover {
+      background-color: #1E7E34;
+    }
+    .reject-btn {
+      background-color: #DC3545;
+      color: white;
+    }
+    .reject-btn:hover {
+      background-color: #C82333;
+    }
+    /* Modal Styling */
+    /* Popup Modal */
+    .modal {
+      display: none;
+      /* Hidden by default */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      /* Backdrop effect */
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      visibility: hidden;
+    }
+    .modal.open {
+      display: flex;
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-content {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      width: 80%;
+      max-width: 600px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+    #previewVideo {
+      width: 100%;
+      border-radius: 8px;
+      max-height: 400px;
+      border: 1px solid #ddd;
+      margin-top: 10px;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    .close-btn:hover {
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <%- include('Dashboard') %>
+  <div class="screens">
+    <div class="home-chairman">
+      <p style="margin: 0;">Home><b>Society Creative</b></p>
+    </div>
+    <div class="show-Screen">
+    <h1 class="text-center">Chairman Approval Panel</h1>
+    <div class="tableClass">
+      <table class="table table-striped mt-4">
+        <thead>
+          <tr>
+            <th style="display: none;">Screen IDs</th>
+            <th>Use ID</th>
+            <th>Society Name</th>
+            <th>Slot</th>
+            <th>Slot URL</th>
+            <th>Slot Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% proposals.forEach((proposal) => { %>
+            <!-- Slot 9 Row -->
+            <tr>
+              <td style="display: none;">
+                <%= proposal.screenid %>
+              </td>
+              <td>
+                <%= proposal.userid %>
+              </td>
+              <td>
+                <%= proposal.username %>
+              </td>
+              <td>Slot 9</td>
+              <td>
+                <% const slot9Videos = proposal.slot9_url ? JSON.parse(proposal.slot9_url) : []; %>
+                <script>
+                  console.log('Slot 9 Videos for Screen ID <%= proposal.screenid %>:', `<%- JSON.stringify(slot9Videos) %>`);
+                </script>
+                <% if (slot9Videos.length > 0) { %>
+                  <button class="btn preview-btn" onclick="showVideoPreview('<%= slot9Videos[0].video_url %>')">
+                    Preview
+                  </button>
+                <% } else { %>
+                  No videos in Slot 9
+                <% } %>
+              </td>
+              
+              
+              <td>
+                <%= proposal.slot9_status || 'N/A' %>
+              </td>
+              <td>
+                <% if (proposal.slot9_status==='pending' ) { %>
+                  <form action="/update-status" method="POST" class="d-inline">
+                    <input type="hidden" name="screenid" value="<%= proposal.screenids %>">
+                    <input type="hidden" name="slot" value="slot9">
+                    <input type="hidden" name="status" value="approved">
+                    <button type="submit" class="approve-btn">Approve Slot 9</button>
+                  </form>
+                  <form action="/update-status" method="POST" class="d-inline">
+                    <input type="hidden" name="screenid" value="<%= proposal.screenids %>">
+                    <input type="hidden" name="slot" value="slot9">
+                    <input type="hidden" name="status" value="reject">
+                    <button type="submit" class="reject-btn">Reject Slot 9</button>
+                  </form>
+                  <% } %>
+              </td>
+            </tr>
+            <!-- Slot 10 Row -->
+            <tr>
+              <td style="display: none;">
+                <%= proposal.screenid %>
+              </td>
+              <td>
+                <%= proposal.userid %>
+              </td>
+              <td>
+                <%= proposal.username %>
+              </td>
+              <td>Slot 10</td>
+              <td>
+                <% const slot10Videos=proposal.slot10_url ? JSON.parse(proposal.slot10_url) : []; %>
+                  <% if (slot10Videos.length> 0) { %>
+                    <button class="btn preview-btn" onclick="showVideoPreview('<%= slot10Videos[0].video_url %>')">
+                      Preview
+                    </button>
+                    <% } else { %>
+                      No videos in Slot 10
+                      <% } %>
+              </td>
+              <td>
+                <%= proposal.slot10_status || 'N/A' %>
+              </td>
+              <td>
+                <% if (proposal.slot10_status==='pending' ) { %>
+                  <form action="/update-status" method="POST" class="d-inline">
+                    <input type="hidden" name="screenid" value="<%= proposal.screenids %>">
+                    <input type="hidden" name="slot" value="slot10">
+                    <input type="hidden" name="status" value="approved">
+                    <button type="submit" class="approve-btn">Approved Slot 10</button>
+                  </form>
+                  <form action="/update-status" method="POST" class="d-inline">
+                    <input type="hidden" name="screenid" value="<%= proposal.screenids %>">
+                    <input type="hidden" name="slot" value="slot10">
+                    <input type="hidden" name="status" value="reject">
+                    <button type="submit" class="reject-btn">Reject Slot 10</button>
+                  </form>
+                  <% } %>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+    <!-- Popup Modal -->
+    <div id="videoPreviewModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeVideoPreview()">&times;</span>
+        <video id="previewVideo" controls></video>
+      </div>
+    </div>
+    <script>
+      // function showVideoPreview(videoUrl) {
+      //   const modal = document.getElementById('videoPreviewModal');
+      //   const video = document.getElementById('previewVideo');
+      //   video.src = videoUrl;
+      //   modal.style.display = 'block';
+      // }
+      // function closeVideoPreview() {
+      //   const modal = document.getElementById('videoPreviewModal');
+      //   const video = document.getElementById('previewVideo');
+      //   video.pause();
+      //   video.src = ""; // Clear the source to stop playback
+      //   modal.style.display = 'none';
+      // }
+      function showVideoPreview(videoUrl) {
+        console.log("videoUrl",videoUrl);
+        
+        const modal = document.getElementById('videoPreviewModal');
+        const video = document.getElementById('previewVideo');
+        video.src = videoUrl; // Set the video source
+        modal.classList.add('open'); // Show the modal
+      }
+      function closeVideoPreview() {
+        const modal = document.getElementById('videoPreviewModal');
+        const video = document.getElementById('previewVideo');
+        modal.classList.remove('open'); // Hide the modal
+        video.pause(); // Stop the video
+        video.src = ''; // Clear the video source
+      }
+      window.onclick = function (event) {
+        const modal = document.getElementById('videoPreviewModal');
+        if (event.target === modal) {
+          closeVideoPreview();
+        }
+      };
+    </script>
+
+</body>
+</html>

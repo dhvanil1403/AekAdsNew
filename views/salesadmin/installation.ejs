@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salas Data</title>
+    <link rel="stylesheet" href="/css/font.css" />
+    <link rel="icon" type="image/png"
+        href="https://res.cloudinary.com/dqfnwh89v/image/upload/v1724408615/qxvvfcf7ftgklhl2k03v.png">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+            z-index: 1001;
+        }
+
+        .toggle-btn {
+            font-size: 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+
+        .header-logo {
+            width: 120px;
+        }
+
+        /* Layout */
+        .container-fluid {
+            display: flex;
+            padding: 0;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: #ffffff;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            transition: left 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .logo {
+            max-width: 80%;
+            margin-bottom: 10px;
+        }
+
+        .menu {
+            padding: 10px 0;
+        }
+
+        .menu li {
+            padding: 10px 20px;
+        }
+
+        .menu a {
+            margin-left: 1rem;
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            text-decoration: none;
+            color: var(--black-100, #1C1C1C);
+
+            font-size: 18px;
+            font-weight: 500;
+            /* line-height: 28px; */
+        }
+
+        .menu a:hover {
+            background-color: rgba(28, 28, 28, 0.05);
+            width: 75%;
+            border-radius: 17px;
+            -webkit-border-radius: 17px;
+            -moz-border-radius: 17px;
+            -ms-border-radius: 17px;
+            -o-border-radius: 17px;
+        }
+
+        .menu-item {
+            margin-left: 10px;
+        }
+
+        .menu a.activ {
+            background-color: rgba(28, 28, 28, 0.05);
+            border-radius: 12px;
+            /* Active border radius */
+            width: 75%;
+
+        }
+
+        /* SVG icon color on hover */
+        .menu a:hover svg path {
+            stroke: #006499;
+        }
+
+        /* SVG icon color for the active tab */
+        .menu.active a svg path {
+            stroke: white;
+        }
+
+        /* SVG icon color on hover */
+        .menu a.activ svg path {
+            stroke: #006499;
+        }
+
+        /* SVG icon color for the active tab */
+        .menu.active a svg path {
+            stroke: white;
+        }
+
+        .admin-section {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+        }
+
+
+        .admin-button {
+            padding: 10px 42px;
+            gap: 7px;
+            background: rgba(28, 28, 28, 0.05);
+            border-radius: 10px;
+            text-decoration: none;
+            color: black;
+            border: none;
+        }
+
+
+        .logout-button {
+            display: block;
+            padding: 10px;
+            text-decoration: underline;
+            color: #000;
+            /* width: 80%; */
+            margin: 10px auto;
+            /* border-radius: 5px; */
+            text-align: center;
+            color: rgba(13, 110, 253, 1);
+        }
+
+        .admin-button:hover {
+            background-color: #ddd;
+        }
+
+
+        /* Content */
+        .content {
+            height: 100vh;
+            padding: 20px;
+            flex: 1;
+            background-color: #F1FAFF;
+            transition: margin-left 0.3s ease;
+            overflow: hidden;
+        }
+
+        .salesClass {
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .salesClass thead {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .show-Screen {
+            box-shadow: 0px 4px 10px 0px #00000040;
+            background: #ffffff;
+            width: 100%;
+            border-radius: 14px;
+            margin: 1% 0 0;
+            padding: 1%;
+            overflow: hidden;
+            height: 75%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+        }
+
+        td {
+            padding: 10px 10px;
+            text-align: center;
+            font-weight: 400;
+            font-size: 14px;
+            border-bottom: 1px solid #d7d7d7;
+            /* border: none; */
+        }
+
+        th {
+            padding: 8px 8px;
+            background-color: #f2f2f2;
+            font-size: 15px;
+            color: #363636;
+            font-weight: bold;
+            text-align: center;
+
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem !important;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+            color: #202224;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1000px) {
+            .logo {
+                display: none;
+            }
+
+            .sidebar-header {
+                display: none;
+            }
+
+            .admin-section {
+                position: absolute;
+                bottom: 70px;
+                width: 100%;
+                text-align: center;
+            }
+
+            .show-Screen {
+                height: 72%;
+            }
+
+            .content {
+                height: 93vh;
+            }
+        }
+
+        @media (min-width: 1000px) {
+            .content {
+                margin-left: 250px;
+            }
+
+            .sidebar {
+                left: 0;
+            }
+
+            .toggle-btn,
+            .header {
+                display: none;
+            }
+        }
+    </style>
+
+    <style>
+        /* Overlay styles */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .overlay-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            z-index: 10000;
+        }
+
+        /* Filter Button */
+        .filter-btn {
+            background-color: #0d6efd;
+            border-radius: 14px;
+            padding: 8px 10px;
+            border: none;
+            color: white;
+            display: none;
+        }
+
+
+        @media (max-width: 768px) {
+            .filter-container {
+                display: none;
+                /* Hide filter container for mobile view */
+            }
+
+            .filter-btn {
+                display: block;
+                /* Show filter button for mobile view */
+            }
+
+            .show-Screen {
+                margin: 5% 0 0;
+            }
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+    <header class="header">
+        <button id="toggle-btn" class="toggle-btn btn btn-outline-dark text-black">&#9776;</button>
+        <img src="https://res.cloudinary.com/dqfnwh89v/image/upload/v1724401978/Aek_Ads_Logo_ltfni2.svg"
+            alt="AekAds Logo" class="header-logo" />
+    </header>
+
+    <div class="container-fluid">
+        <div id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://res.cloudinary.com/dqfnwh89v/image/upload/v1724401978/Aek_Ads_Logo_ltfni2.svg"
+                    alt="AekAds Logo" class="logo" />
+            </div>
+            <ul class="menu">
+                <li>
+                    <a href="/salesadmin/acquisition">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z"
+                                stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M9 3V21" stroke="black" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+
+                        <span class="menu-item">Acquisition</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/salesadmin/installation">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="black" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M2 17L12 22L22 17" stroke="black" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M2 12L12 17L22 12" stroke="black" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+
+                        <span class="menu-item">Installation</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/salesadmin/sales">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21"
+                                stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <path
+                                d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z"
+                                stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <path
+                                d="M23 20.9999V18.9999C22.9993 18.1136 22.7044 17.2527 22.1614 16.5522C21.6184 15.8517 20.8581 15.3515 20 15.1299"
+                                stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <path
+                                d="M16 3.12988C16.8604 3.35018 17.623 3.85058 18.1676 4.55219C18.7122 5.2538 19.0078 6.11671 19.0078 7.00488C19.0078 7.89305 18.7122 8.75596 18.1676 9.45757C17.623 10.1592 16.8604 10.6596 16 10.8799"
+                                stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+
+                        <span class="menu-item">Sales</span>
+                    </a>
+                </li>
+
+            </ul>
+
+            <div class="admin-section">
+                <button class="admin-button">
+                    <svg width="27" height="28" viewBox="0 0 27 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M13.5 26.75C20.5416 26.75 26.25 21.0416 26.25 14C26.25 6.95837 20.5416 1.25 13.5 1.25C6.45837 1.25 0.75 6.95837 0.75 14C0.75 21.0416 6.45837 26.75 13.5 26.75Z"
+                            stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path
+                            d="M19.5 20.75V19.25C19.5 18.4544 19.1839 17.6913 18.6213 17.1287C18.0587 16.5661 17.2956 16.25 16.5 16.25H10.5C9.70435 16.25 8.94129 16.5661 8.37868 17.1287C7.81607 17.6913 7.5 18.4544 7.5 19.25V20.75"
+                            stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path
+                            d="M13.5 13.25C15.1569 13.25 16.5 11.9069 16.5 10.25C16.5 8.59315 15.1569 7.25 13.5 7.25C11.8431 7.25 10.5 8.59315 10.5 10.25C10.5 11.9069 11.8431 13.25 13.5 13.25Z"
+                            stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <span class="adminBtn">SalesAdmin </span>
+                </button>
+                <a href="/logout" class="logout-button">Logout</a>
+            </div>
+
+        </div>
+
+        <main class="content">
+
+            <h1 class="mb-4">Installation Data</h1>
+
+            <!-- Work Status Summary -->
+
+            <div id="summaryContainer" class="d-flex flex-wrap gap-3" style="margin-bottom: 1%;">
+                <!-- Summary items will be dynamically inserted here -->
+            </div>
+
+
+
+            <!-- Filters -->
+            <button class="filter-btn" onclick="toggleOverlay()">Show Filters</button>
+
+            <div class="filter-container">
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <label for="cityFilter" class="form-label">Filter by City:</label>
+                        <select id="cityFilter" class="form-select">
+                            <option value="">Select City</option>
+                            <% const uniqueCities=[...new Set(societyWork.map(w=> w.assign_city))];
+                                uniqueCities.forEach(city => {
+                                %>
+                                <option value="<%= city %>">
+                                    <%= city %>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="employeeFilter" class="form-label">Filter by Employee:</label>
+                        <select id="employeeFilter" class="form-select">
+                            <option value="">Select Employee</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="startDate" class="form-label">Start Date:</label>
+                        <input type="date" id="startDate" class="form-control">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="endDate" class="form-label">End Date:</label>
+                        <input type="date" id="endDate" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overlay for mobile view -->
+            <div class="overlay" id="overlay">
+                <div class="overlay-content">
+                    <div class="row">
+                        <button
+                            style="background: transparent; border: none; float: right; margin: 0 140px; padding: 0;"
+                            onclick="toggleOverlay()"><svg width="20" height="24" viewBox="0 0 20 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14.5712 5.81592L5.06641 17.3754" stroke="#37393A" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M5.06641 5.81592L14.5712 17.3754" stroke="#37393A" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                        <div class="col-md-3">
+                            <label for="cityFilter" class="form-label">Filter by City:</label>
+                            <select id="cityFilterOverlay" class="form-select">
+                                <option value="">Select City</option>
+                                <% uniqueCities.forEach(city=> { %>
+                                    <option value="<%= city %>">
+                                        <%= city %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="employeeFilter" class="form-label">Filter by Employee:</label>
+                            <select id="employeeFilter" class="form-select">
+                                <option value="">Select Employee</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="startDate" class="form-label">Start Date:</label>
+                            <input type="date" id="startDate" class="form-control">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="endDate" class="form-label">End Date:</label>
+                            <input type="date" id="endDate" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function toggleOverlay() {
+                    let overlay = document.getElementById('overlay');
+                    overlay.style.display = (overlay.style.display === 'flex') ? 'none' : 'flex';
+                }
+            </script>
+
+            <!-- <div class="salestable"> -->
+            <div class="show-Screen">
+                <div class="salesClass">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Society Name</th>
+                                <th>Screen Name</th>
+                                <th>Employee Work</th>
+                                <th>Work Photo</th>
+                                <th>Employee Code</th>
+                                <th>Employee Name</th>
+                                <th>Assign City</th> <!-- New column for Assign City -->
+                                <th>Updated Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="installationTableBody">
+                            <% societyWork.sort((a, b)=> a.id - b.id).forEach((work, index) => { %>
+                                <tr data-city="<%= work.assign_city %>"
+                                    data-emp="<%= work.emp_id %> - <%= work.employee_name %>"
+                                    data-date="<%= work.updated_date %>">
+
+                                    <td>
+                                        <%= index + 1 %>
+                                    </td> <!-- Serial Number -->
+                                    <td>
+                                        <%= work.society_name %>
+                                    </td>
+                                    <td>
+                                        <%= work.screen_name %>
+                                    </td>
+                                    <td class="employee-work-data" style="display: none;">
+                                        <%= typeof work.employee_work === "string" ? work.employee_work : JSON.stringify(work.employee_work) %>
+                                    </td>
+                                    <td class="employee-work-display">
+                                        <% if (work.employee_work) { %>
+                                            <% 
+                                                let workTypes = [];
+                                                try {
+                                                    if (typeof work.employee_work === "string") {
+                                                        workTypes = JSON.parse(work.employee_work);
+                                                    } else {
+                                                        workTypes = work.employee_work;
+                                                    }
+                                                    
+                                                    if (!Array.isArray(workTypes)) {
+                                                        workTypes = [workTypes.toString()];
+                                                    }
+                                                } catch (e) {
+                                                    workTypes = [work.employee_work.toString()];
+                                                }
+                                            %>
+                                            <% workTypes.forEach(workItem => { %>
+                                                <span class="badge bg-secondary me-1"><%= workItem %></span>
+                                            <% }) %>
+                                        <% } else { %>
+                                            <span class="text-muted">No Work Assigned</span>
+                                        <% } %>
+                                    </td>
+                                    
+                                    <td>
+                                        <% if (work.work_photo) { %>
+                                            <img src=" <%=work.work_photo %>" alt="Work Photo" width="100">
+                                            <% } else { %>
+                                                No Photo
+                                                <% } %>
+                                    </td>
+                                    <td>
+                                        <%= work.emp_id %>
+                                    </td>
+                                    <td>
+                                        <%= work.employee_name %>
+                                    </td>
+                                    <td>
+                                        <%= work.assign_city %>
+                                    </td>
+                                    <td>
+                                        <%= new Date(work.updated_date).toLocaleString('en-IN', {
+                                            timeZone: 'Asia/Kolkata' , weekday: 'long' }) %><br>
+                                            <%= new Date(work.updated_date).toLocaleString('en-IN', {
+                                                timeZone: 'Asia/Kolkata' , year: 'numeric' , month: 'numeric' ,
+                                                day: 'numeric' }) %><br>
+                                                <%= new Date(work.updated_date).toLocaleString('en-IN', {
+                                                    timeZone: 'Asia/Kolkata' , hour: '2-digit' , minute: '2-digit' ,
+                                                    second: '2-digit' }) %>
+                                    </td>
+
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- </div> -->
+            </div>
+        </main>
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+        <script>
+            $(document).ready(function () {
+                // Define allowed work types (case-insensitive)
+                const workTypeMapping = {
+                    'installation': 'Installation',
+                    'maintenance': 'Maintenance'
+                };
+
+                // Update Employee Dropdown based on selected City
+                $('#cityFilter').on('change', function () {
+                    var selectedCity = $(this).val();
+                    var uniqueEmployees = new Set();
+
+                    // Clear and populate employee dropdown
+                    $('#employeeFilter').html('<option value="">Select Employee</option>');
+
+                    // Collect unique employee entries for the selected city
+                    $('#installationTableBody tr').each(function () {
+                        if ($(this).data('city') === selectedCity) {
+                            uniqueEmployees.add($(this).data('emp'));
+                        }
+                    });
+
+                    uniqueEmployees.forEach(emp => {
+                        $('#employeeFilter').append('<option value="' + emp + '">' + emp + '</option>');
+                    });
+
+                    filterTable();
+                });
+
+                // Apply filters when inputs change
+                $('#employeeFilter, #startDate, #endDate').on('change', function () {
+                    filterTable();
+                });
+
+                function filterTable() {
+                    var selectedCity = $('#cityFilter').val();
+                    var selectedEmployee = $('#employeeFilter').val();
+                    var startDate = $('#startDate').val();
+                    var endDate = $('#endDate').val();
+
+                    // Initialize counts for allowed work types
+                    const workCounts = {
+                        'Installation': 0,
+                        'Maintenance': 0
+                    };
+
+                    $('#installationTableBody tr').each(function () {
+                        var rowCity = $(this).data('city');
+                        var rowEmployee = $(this).data('emp');
+                        var rawDate = $(this).data('date'); // Example: "Wed Jan 29 2025 10:29:54 GMT+0000"
+
+                        // Convert date to YYYY-MM-DD format
+                        var rowDate = formatDate(rawDate);
+
+                        var cityMatch = selectedCity === "" || rowCity === selectedCity;
+                        var empMatch = selectedEmployee === "" || rowEmployee === selectedEmployee;
+                        var dateMatch = true;
+
+                        if (startDate && endDate) {
+                            dateMatch = rowDate >= startDate && rowDate <= endDate;
+                        } else if (startDate) {
+                            dateMatch = rowDate >= startDate;
+                        } else if (endDate) {
+                            dateMatch = rowDate <= endDate;
+                        }
+
+                        if (cityMatch && empMatch && dateMatch) {
+                            $(this).show();
+
+                            // Handle employee_work as an array
+                            const employeeWorkCell = $(this).find('td:eq(3)').text().trim();
+                            try {
+                                // Parse the employee_work field as an array
+                                const workTypes = JSON.parse(employeeWorkCell.replace(/'/g, '"')); // Replace single quotes with double quotes for valid JSON
+                                workTypes.forEach(workType => {
+                                    const normalizedWorkType = workType.toLowerCase();
+                                    if (normalizedWorkType === 'installation') {
+                                        workCounts['Installation']++;
+                                    } else if (normalizedWorkType === 'maintenance') {
+                                        workCounts['Maintenance']++;
+                                    }
+                                });
+                            } catch (error) {
+                                console.error('Error parsing employee_work:', error);
+                            }
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+
+                    // Update the work summary
+                    updateWorkSummary(workCounts);
+                }
+
+                // Function to convert "Wed Jan 29 2025 10:29:54 GMT+0000" to "2025-01-29"
+                function formatDate(dateString) {
+                    var dateObj = new Date(dateString);
+                    if (isNaN(dateObj)) return ""; // Handle invalid dates
+
+                    var year = dateObj.getFullYear();
+                    var month = ("0" + (dateObj.getMonth() + 1)).slice(-2); // Ensure 2 digits
+                    var day = ("0" + dateObj.getDate()).slice(-2);
+
+                    return `${year}-${month}-${day}`;
+                }
+
+                // Function to update the work summary
+                function updateWorkSummary(counts) {
+                    var summaryContainer = $('#summaryContainer');
+                    summaryContainer.empty();
+
+                    // Always show both categories in fixed order
+                    Object.entries(counts).forEach(([workType, count]) => {
+                        summaryContainer.append(`
+                    <div class="summary-item badge bg-primary p-2">
+                      ${workType} = ${count}
+                    </div>
+                  `);
+                    });
+
+                    // Optional: Show message if all counts are zero
+                    if (Object.values(counts).every(c => c === 0)) {
+                        summaryContainer.append(`
+                    <div class="text-muted">No matching records found</div>
+                  `);
+                    }
+                }
+
+            });
+        </script>
+
+
+        <script>
+            const toggleBtn = document.getElementById("toggle-btn");
+            const sidebar = document.getElementById("sidebar");
+
+            toggleBtn.addEventListener("click", () => {
+                if (sidebar.style.left === "0px") {
+                    sidebar.style.left = "-250px";
+                } else {
+                    sidebar.style.left = "0";
+                }
+            });
+        </script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const navLinks = document.querySelectorAll('.menu a');
+                const currentUrl = window.location.pathname;
+
+                navLinks.forEach(link => {
+                    if (link.getAttribute('href') === currentUrl) {
+                        link.classList.add('activ'); // Add active class to the current link
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function () {
+                        navLinks.forEach(nav => nav.classList.remove('activ')); // Remove active from all
+                        this.classList.add('activ'); // Add active to the clicked link
+                    });
+                });
+            });
+
+        </script>
+</body>
+
+</html>

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screens</title>
+  
+    <link rel="stylesheet" href="/css/font.css" />
+
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            /* Prevent scrolling for the full page */
+            font-family: Arial, sans-serif;
+            background-color: #F5F8FA;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden;
+            /* Prevent scrolling within the container */
+        }
+
+        .breadcrumb {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 5px 20px;
+            gap: 9px;
+            width: 180px;
+            height: 30px;
+            left: 239px;
+            top: 42px;
+            background: #FFFFFF;
+            box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+            border-radius: 15px;
+            color: var(--black-80, #1C1C1CCC);
+            margin-bottom: 8px;
+        }
+
+        .screen-info {
+            display: flex;
+            justify-content: space-between;
+            background-color: #FFFFFF;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        }
+
+        .current-playing {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .playing-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .current-playing img {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+
+        .screen-details {
+            flex-grow: 1;
+            margin-left: 20px;
+        }
+
+        .screen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .screen-header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .status {
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #FFFFFF;
+        }
+
+        .status.online {
+            background-color: #28a745;
+        }
+
+        .status.offline {
+            background-color: #dc3545;
+        }
+
+        .location-info {
+            font-size: 14px;
+            color: #007BFF;
+            margin-bottom: 20px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .detail-box {
+            background-color: #f1f3f5;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .tabs ul {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .tabs ul li {
+            margin-right: 20px;
+        }
+
+        .tabs ul li a {
+            text-decoration: none;
+            color: #007BFF;
+            font-weight: 600;
+        }
+
+        .assign-playlist {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 250px);
+            /* Adjust height to fit within the container */
+        }
+
+        .showPlaylists {
+            flex-grow: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            overflow-y: auto;
+            /* Allow scrolling only for the playlist container */
+            padding-right: 10px;
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+
+        .playlist-item {
+            background-color: #FFFFFF;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: calc(30% - 10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .playlist-img {
+            background-color: #f1f3f5;
+            height: 100px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .playlist-info2 {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            background-color: #007BFF;
+            color: #FFFFFF;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+        }
+
+        .playlist-info .playlist-name {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .playlist-info .playlist-date {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .playlist-info3 .playlist-layouts {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        #preview {
+            border-radius: 15px;
+            padding: 8px 12px;
+            border: none;
+            background-color: #0D6EFD;
+            color: white;
+            cursor: pointer;
+        }
+
+        #preview:hover {
+            background-color: #0f58c5;
+            box-shadow: 0px 4px 10px 0px #b3b3b340;
+            transition: 1s;
+        }
+
+        @media (max-width: 1300px) {
+            .playlist-item {
+                background-color: #FFFFFF;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                width: calc(29% - 10px);
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                flex-shrink: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <%- include('Dashboard') %>
+        <div class="container">
+            <!-- Breadcrumb -->
+            <nav class="breadcrumb">
+                <p>Home > <b>Screen Name</b></p>
+            </nav>
+
+            <!-- Screen Information Section -->
+            <section class="screen-info">
+
+                <div class="screen-details">
+                    <div class="screen-header">
+                        <h1>
+                            <%= screen.screenname %>
+                        </h1>
+                        <span>
+                            <button id="preview">Preview</button>
+
+                        </span>
+                    </div>
+
+                    <p class="location-info">
+                        <%= screen.city %> | <%= screen.last_updated %>
+                    </p>
+                    <div class="details-grid">
+                        <% if (screen.deviceConfig && Object.keys(screen.deviceConfig).length> 0) { %>
+                            <div class="detail-box"> <strong>RAM Total:</strong>
+                                <%= screen.deviceConfig.ram_total %>
+                            </div>
+                            <div class="detail-box"> <strong>RAM Used:</strong>
+                                <%= screen.deviceConfig.ram_used %>
+                            </div>
+                            <div class="detail-box"> <strong>Storage Total:</strong>
+                                <%= screen.deviceConfig.storage_total %> GB
+                            </div>
+                            <div class="detail-box"> <strong>Storage Used:</strong>
+                                <%= screen.deviceConfig.storage_used %> GB
+                            </div>
+                            <div class="detail-box"> <strong>Resolution:</strong>
+                                <%= screen.deviceConfig.resolution %>
+                            </div>
+                            <div class="detail-box"> <strong>Downstream Bandwidth:</strong>
+                                <%= screen.deviceConfig.downstream_bandwidth %>
+                            </div>
+                            <div class="detail-box"> <strong>Upstream Bandwidth:</strong>
+                                <%= screen.deviceConfig.upstream_bandwidth %>
+                            </div>
+                            <div class="detail-box"> <strong>Manufacturer:</strong>
+                                <%= screen.deviceConfig.manufacturer %>
+                            </div>
+                            <div class="detail-box"> <strong>Model:</strong>
+                                <%= screen.deviceConfig.model %>
+                            </div>
+                            <div class="detail-box"> <strong>OS Version:</strong>
+                                <%= screen.deviceConfig.os_version %>
+                            </div>
+                            <div class="detail-box"> <strong>WiFi Enabled:</strong>
+                                <%= screen.deviceConfig.wifi_enabled ? 'Yes' : 'No' %>
+                            </div>
+                            <div class="detail-box"> <strong>WiFi MAC Address:</strong>
+                                <%=screen.deviceConfig.wifi_mac_address %>
+                            </div>
+                            <div class="detail-box"> <strong>App Version:</strong>
+                                <%=screen.deviceConfig.wifi_network_ssid %>
+                            </div>
+                            <div class="detail-box"> <strong>WiFi Signal Strength (dBm):</strong>
+                                <%= screen.deviceConfig.wifi_signal_strength_dbm %>
+                            </div>
+                            <div class="detail-box"> <strong>Android ID:</strong>
+                                <%=screen.deviceConfig.android_id %>
+                            </div>
+                            <div class="detail-box"> <strong>Second Screen Present:</strong>
+                                <%= screen.deviceConfig.ifsecondscreenispresentondevice %>
+                            </div>
+
+
+
+
+                    </div>
+                    <% } else { %>
+                        <p>No device configuration data available.</p>
+                        <% } %>
+
+                            <!-- <section style="margin-top: 3%;display: none;" class="tabs"  >
+                                <ul>
+                                    <li><a href="#">Media</a></li>
+                                    <li><a href="#">Schedule</a></li>
+                                    <li><a href="#">Configuration</a></li>
+                                    <li><a href="#">Network Uptime</a></li>
+                                    <li><a href="#">Additional Info</a></li>
+                                    <li><a href="#">Settings</a></li>
+                                </ul>
+                            </section> -->
+                </div>
+            </section>
+
+            <!-- Assign Playlist Section -->
+            <div class="detail-box"> <br>
+                <h2> </h2>
+            </div>
+
+            <section class="assign-playlist">
+
+                <div class="showPlaylists">
+                    <% if (screen.playlists && screen.playlists.length> 0) { %>
+                        <% screen.playlists.forEach(playlist=> { %>
+                            <!-- // Check if the current playlist is assigned -->
+                            <% const isAssigned=screen.assignedPlaylists &&
+                                screen.assignedPlaylists.includes(playlist.id); %>
+                                <div class="playlist-item ">
+                                    <div class="playlist-img">
+                                        <!-- Placeholder for playlist image -->
+
+                                    </div>
+                                    <div class="playlist-info2">
+                                        <button class="edit-btn"
+                                            onclick="location.href='/Dashboard/Playlist/PlaylistEdit/<%= playlist.id %>'">Edit</button>
+                                        <button class="delete-btn"
+                                            onclick="deletePlaylist('<%= playlist.id %>')">Delete</button>
+                                    </div>
+                                    <div class="playlist-info">
+                                        <p class="playlist-name"><strong>
+                                                <%= playlist.playlistname %>
+                                            </strong></p>
+
+                                    </div>
+                                    <div class="playlist-info3">
+                                        <p class="playlist-layouts">2 Layouts</p>
+                                    </div>
+                                </div>
+                                <% }); %>
+                                    <% } else { %>
+                                        <p>No playlists available.</p>
+                                        <% } %>
+                </div>
+            </section>
+
+        </div>
+
+        <script>
+            function deletePlaylist(id) {
+                // Implement the delete logic here
+                if (confirm('Are you sure you want to delete this playlist?')) {
+                    location.href = `/Dashboard/Playlist/PlaylistDelete/${id}`;
+                }
+            }
+        </script>
+
+
+
+
+
+
+
+
+
+
+
+
+        <script>
+    document.getElementById('preview').addEventListener('click', async () => {
+    try {
+        // Get the current URL
+        const currentUrl = window.location.href;
+        console.log('Current URL:', currentUrl);
+
+        // Extract the ID using string methods
+        const screenId = currentUrl.split('/').pop();
+        console.log('Extracted Screen ID:', screenId);
+
+        // Make a request to fetch data for the extracted screen ID
+        const response = await fetch(`/Dashboard/Screens/preview/${screenId}`);
+        console.log('Fetch Response Status:', response.status);
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Fetched Data:', data);
+            displayPreview(data);
+        } else {
+            console.error('Failed to fetch screen data:', response.statusText);
+            alert('Failed to fetch screen data');
+        }
+    } catch (error) {
+        console.error('Error during fetch operation:', error);
+    }
+});
+
+function displayPreview(data) {
+    try {
+        console.log('Display Preview Called with Data:', data);
+
+        // Create or get the modal container
+        let modalContainer = document.getElementById('preview-modal');
+        if (!modalContainer) {
+            modalContainer = document.createElement('div');
+            modalContainer.id = 'preview-modal';
+            modalContainer.className = 'modal';
+            modalContainer.innerHTML = `
+                <div class="modal-content">
+                    <span class="close-btn" onclick="closeModal()">&times;</span>
+                    <div id="preview-content"></div>
+                </div>
+            `;
+            document.body.appendChild(modalContainer);
+        }
+
+        const previewContent = modalContainer.querySelector('#preview-content');
+        previewContent.innerHTML = ''; // Clear previous content
+
+        // Add video previews
+        for (let i = 1; i <= 10; i++) {
+            const slot = data[`slot${i}`];
+            console.log(`Processing Slot ${i}:`, slot);
+
+            if (slot) {
+                let slotVideos;
+                try {
+                    // Attempt to parse the slot as JSON
+                    slotVideos = JSON.parse(slot);
+                    console.log(`Slot ${i} Parsed JSON:`, slotVideos);
+                } catch (e) {
+                    // If parsing fails, treat it as a single URL string
+                    console.warn(`Slot ${i} Parsing Failed. Treating as string:`, slot);
+                    slotVideos = [slot];
+                }
+
+                // Create video previews
+                const slotDiv = document.createElement('div');
+                slotDiv.innerHTML = `<h3>Slot ${i}</h3>`;
+                slotVideos.forEach((videoObj, index) => {
+                    if (videoObj.video_url) {
+                        console.log(`Adding Video URL for Slot ${i}, Video ${index + 1}:`, videoObj.video_url);
+
+                        const video = document.createElement('video');
+                        video.src = videoObj.video_url;  // Use video_url from the object
+                        video.controls = true;
+                        video.className = 'preview-video';
+                        slotDiv.appendChild(video);
+                    } else {
+                        console.warn(`No video_url found for Video ${index + 1} in Slot ${i}`);
+                    }
+                });
+                previewContent.appendChild(slotDiv);
+            }
+        }
+
+        // Show the modal
+        modalContainer.style.display = 'block';
+        console.log('Modal Displayed.');
+
+    } catch (error) {
+        console.error('Error during displayPreview:', error);
+    }
+}
+            function closeModal() {
+                const modal = document.getElementById('preview-modal');
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+            }
+        </script>
+
+        <style>
+            /* Modal container */
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0, 0, 0, 0.8);
+            }
+
+            /* Modal content */
+            .modal-content {
+                position: relative;
+                margin: auto;
+                padding: 20px;
+                background-color: white;
+                width: 80%;
+                max-width: 800px;
+                border-radius: 10px;
+                overflow-y: auto;
+                max-height: 90%;
+                margin-top: 1%;
+            }
+
+            /* Close button */
+            .close-btn {
+                position: absolute;
+                top: 10px;
+                right: 20px;
+                color: #aaa;
+                font-size: 28px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+            .close-btn:hover,
+            .close-btn:focus {
+                color: black;
+            }
+
+            /* Video styling */
+            .preview-video {
+                width: 20%;
+                max-height: 300px;
+                margin-bottom: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                margin-left: 10px;
+            }
+        </style>
+
+</body>
+
+</html>

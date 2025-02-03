@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management</title>
+  <style>
+   
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      color: #4CAF50;
+    }
+    .table-container {
+      width: 90%;
+      margin: 20px auto;
+      overflow-x: auto; /* Enable horizontal scrolling */
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+    }
+    /* Custom Scrollbar Styles */
+    .table-container::-webkit-scrollbar {
+      height: 10px; /* Horizontal scrollbar height */                              
+    }
+    .table-container::-webkit-scrollbar-track {
+      background: #f1f1f1; /* Scrollbar track background */
+      border-radius: 5px;
+    }
+    .table-container::-webkit-scrollbar-thumb {
+      background: #4CAF50; /* Scrollbar thumb color */
+      border-radius: 5px;
+    }
+    .table-container::-webkit-scrollbar-thumb:hover {
+      background: #45a049; /* Darker shade on hover */
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+    th {
+      background-color: #4CAF50;
+      color: white;
+      font-weight: bold;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    tr:hover {
+      background-color: #f1f1f1;
+      cursor: pointer;
+    }
+    
+  </style>
+</head>
+<body>
+  <%- include('suparAdmin_layout') %>
+
+  <div class="container">
+    <h1>SuparAdmin Society Data</h1>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Society Name</th>
+            <th>Per Screen Rent</th>
+            <th>Total Rent</th>
+            <th>Chairman Name</th>
+            <th>Chairman Number</th>
+            <th>Secretary Name</th>
+            <th>Secretary Number</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% authData.forEach((row) => { %>
+            <tr>
+              <td><%= row.username %></td>
+              <td><%= row.per_screen_rent %></td>
+              <td><%= row.total_rent %></td>
+              <td><%= row.chairman_name %></td>
+              <td><%= row.chairman_number %></td>
+              <td><%= row.secretary_name %></td>
+              <td><%= row.secretary_number %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>                      
+  </div>                                                                            
+</body>                                                                         
+</html>                                                                                                                                               
+                                                                                 

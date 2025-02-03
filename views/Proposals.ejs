@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Proposal</title>
+    <link rel="icon" type="image/png"
+        href="https://res.cloudinary.com/dqfnwh89v/image/upload/v1724408615/qxvvfcf7ftgklhl2k03v.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+
+
+    <script>
+        // Safely parse screenProposal data from backend
+        const screenProposal = JSON.parse('<%- JSON.stringify(screenProposal || []) %>');
+        console.log("Screen Proposal Data:", screenProposal);
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="/css/dashboard.css"> -->
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        body {
+            background-color: #F1FAFF;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+
+        .home-proposal {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 5px 20px;
+            gap: 9px;
+            width: 172px;
+            height: 40px;
+            left: 239px;
+            top: 42px;
+            background: #FFFFFF;
+            box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+            border-radius: 15px;
+        }
+
+        .home {
+            margin: 0;
+        }
+
+
+
+        /* Custom Popup Style */
+        #proposal-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            /* Default to 90% width for mobile */
+            max-width: 1100px;
+            /* Max width for desktop */
+            background-color: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        /* Desktop view - no scroll on larger screens unless overflow */
+        @media (min-width: 769px) {
+            #proposal-popup {
+                max-height: none;
+                overflow-y: visible;
+                z-index: 10;
+            }
+        }
+
+        /* Mobile view - enable scrollbar when content exceeds screen height */
+        @media (max-width: 768px) {
+            #proposal-popup {
+                max-height: 90vh;
+                /* Limit the height to 90% of the viewport */
+                overflow-y: auto;
+                /* Enable vertical scroll if content overflows */
+                padding: 15px;
+                z-index: 10;
+            }
+        }
+
+        /* Button styles */
+        button#close-popup {
+            background-color: #dc3545;
+            color: white;
+            margin-top: 10px;
+        }
+
+        button#close-popup:hover {
+            background-color: #c82333;
+        }
+
+        /* Popup heading */
+        #proposal-popup h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            #proposal-popup h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Search container */
+        .search-container {
+            /* margin: 1px auto; */
+            width: 100%;
+            max-width: 1600px;
+            display: flex;
+            align-items: center;
+            background: rgba(28, 28, 28, 0.05);
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+            border-radius: 10px;
+            margin-bottom: 1.5%;
+
+        }
+
+        .search-icon {
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            border: none;
+            outline: none;
+            background-color: transparent;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        /*1 table */
+        .table1 {
+            margin: 1px auto;
+            width: 100%;
+            max-width: 2000px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+            overflow-x: auto;
+            white-space: nowrap;
+            position: relative;
+            height: 640px;
+            /* height: 64%; */
+            margin-top: 8px;
+        }
+
+        @media (max-height: 867px) {
+            .table1 {
+                height: 577px;
+            }
+
+        }
+
+        @media (max-width: 1300px) {
+
+            .nav-links {
+                gap: 130px;
+            }
+        }
+
+        @media (min-height: 1300px) {
+            .table1 {
+                height: 550px;
+            }
+        }
+
+
+
+
+        /* Flexbox utility */
+        .jayho {
+            display: flex;
+            gap: 6px;
+            margin: 35px 0px;
+            width: 323px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate !important;
+            /* border: 1px solid #979797; */
+        }
+
+        td {
+            padding: 10px 10px;
+            text-align: center;
+            font-weight: 400;
+            font-size: 14px;
+            border-bottom: 1px solid #c2c2c2;
+            color: #000;
+            /* border: none; */
+
+        }
+
+        th {
+            padding: 8px 8px;
+            background-color: #f2f2f2 !important;
+            font-size: 15px;
+            color: #363636 !important;
+            font-weight: bold;
+            text-align: center;
+            top: 0;
+            position: sticky;
+
+        }
+
+        /* Apply transparency to the odd rows */
+        .table-striped>tbody>tr:nth-of-type(odd)>* {
+            background-color: transparent;
+
+        }
+
+
+        table {
+            --bs-table-hover-bg: rgba(228, 228, 228, 0.075) !important;
+        }
+
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+            color: #202224;
+        }
+
+        td,
+        th {
+            padding: 8px;
+            text-align: center;
+            /* border: 1px solid #ddd; */
+        }
+
+        /* City Dropdown */
+        .city-dropdown {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        #dropdownList {
+            position: absolute;
+            width: 100%;
+            max-height: 150px;
+            overflow-y: auto;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            display: none;
+            z-index: 10;
+        }
+
+        #dropdownList .dropdown-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        #dropdownList .dropdown-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Margin utility */
+        .mt-4 {
+            margin-top: 0 !important;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            margin-top: 2%;
+            display: flex;
+            justify-content: flex-start;
+            border-bottom: 2px solid #e0e4eb;
+            /* background-color: white; */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 190px;
+            /* justify-content: space-around; */
+            width: 100%;
+            /* background-color: aqua; */
+        }
+
+        .navbar a.active,
+        .navbar a:hover {
+            color: hsl(219, 94%, 48%);
+            border-bottom: 3px solid hsl(219, 94%, 48%);
+        }
+
+        /* Mobile navbar adjustments */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 1300px) {
+            .nav-links {
+                gap: 130px;
+            }
+        }
+
+        @media (max-width: 1272px) {
+            .nav-links {
+                gap: 125px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .nav-links {
+                gap: 101px;
+            }
+        }
+
+        .navbar a {
+            text-decoration: none;
+            padding: 10px;
+            color: #333;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        @media (max-width: 576px) {
+            .navbar {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .navbar a {
+                margin-bottom: 5px;
+            }
+        }
+
+        /* Custom Popup Style */
+        #proposal-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            /* Default to 90% width for mobile */
+            max-width: 1100px;
+            /* Max width for desktop */
+            background-color: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        /* Desktop view - no scroll on larger screens unless overflow */
+        @media (min-width: 769px) {
+            #proposal-popup {
+                max-height: none;
+                overflow-y: visible;
+            }
+        }
+
+        /* Mobile view - enable scrollbar when content exceeds screen height */
+        @media (max-width: 768px) {
+            #proposal-popup {
+                max-height: 90vh;
+                /* Limit the height to 90% of the viewport */
+                overflow-y: auto;
+                /* Enable vertical scroll if content overflows */
+            }
+        }
+
+        /* Button styles */
+        button#close-popup {
+            background-color: #dc3545;
+            color: white;
+            margin-top: 10px;
+        }
+
+        button#close-popup:hover {
+            background-color: #c82333;
+        }
+
+
+        /* Navbar styles */
+
+        #proposal-popup h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* @media (max-width: 768px) {
+#proposal-popup {
+width: 95%;
+padding: 15px;
+}
+
+#proposal-popup .popup-content {
+padding: 0;
+}
+} */
+
+        .admin-proposal {
+            width: 80%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: start;
+            align-items: start;
+            color: #1c1c1ccc;
+            padding: 20px;
+            z-index: 1;
+        }
+
+        .table-container {
+            width: 100%;
+        }
+    </style>
+
+</head>
+
+
+<body>
+    <%- include('Dashboard') %>
+
+        <div class="admin-proposal">
+
+
+            <div class="jayho" style="display: none;">
+                <h1 style="font-size: 23px; color: rgb(17, 17, 17)">PROPOSALS</h1>
+                <svg width="36" id="show-proposal-form" height="36" viewBox="0 0 36 36" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" id="openFormBtn3">
+                    <circle cx="17.625" cy="17.625" r="17.25" fill="#F9F9FA" stroke="#37393A" stroke-width="0.75" />
+                    <g clip-path="url(#clip0_4319_3938)">
+                        <path d="M18.0007 11.636V24.364" stroke="#37393A" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M11.6367 18H24.3646" stroke="#37393A" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </g>
+                    <defs>
+                        <clipPath id="clip0_4319_3938">
+                            <rect width="18" height="18" fill="white" transform="translate(5.27344 18) rotate(-45)" />
+                        </clipPath>
+                    </defs>
+                </svg>
+            </div>
+
+
+
+            <!-- Proposal Form Popup -->
+            <div id="proposal-popup" style="display:none;">
+                <div class="popup-content">
+                    <div class="header">
+
+                        <h6 style="font-size: 20px; margin-bottom: 1.5rem;">Create Proposal
+
+                            <svg id="close-popup" style="float: right; cursor: pointer;" width="24" height="24"
+                                viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14.5712 5.81543L5.06641 17.3749" stroke="#37393A" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M5.06641 5.81543L14.5712 17.3749" stroke="#37393A" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </h6>
+                    </div>
+                    <form id="proposal-form" action="/proposals/create" method="POST" class="row g-3">
+                        <div class="col-12">
+                            <label for="clientName" class="form-label">Client Name:</label>
+                            <input type="text" id="clientName" name="clientName" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="startDate" class="form-label">Starts on:</label>
+                            <input type="date" id="startDate" name="startDate" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="endDate" class="form-label">Runs For:</label>
+                            <input type="number" id="endDate" name="endDate" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="slotDuration" class="form-label">Slot Duration:</label>
+                            <input type="number" id="slotDuration" name="slotDuration" class="form-control" step="5"
+                                min="10" required>
+                        </div>
+
+                        <div class="city-dropdown">
+                            <h6>Cities</h6>
+                            <div class="input-container" id="inputContainer">
+                                <input type="text" class="form-control" name="cities" id="inputField"
+                                    placeholder="Click to select" required readonly style="width: 100%;">
+                            </div>
+                            <div class="dropdown" id="dropdownList">
+
+                                <div class="dropdown-item" onclick="selectItem('Ahmedabad')">Ahmedabad</div>
+                                <div class="dropdown-item" onclick="selectItem('Gandhinagar')">Gandhinagar</div>
+                                <div class="dropdown-item" onclick="selectItem('Surat')">Surat</div>
+                                <!-- Add other city options here -->
+                            </div>
+                            <!-- Hidden input field to store selected cities -->
+                            <input type="hidden" name="selectedCities" id="selectedCities">
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="col-md-6">
+                                <label for="clientType" class="form-label">Client Type:</label>
+                                <select id="clientType" name="clientType" class="form-select" required>
+                                    <option value="National Agency">National Agency</option>
+                                    <option value="Local Business">Local Business</option>
+                                    <option value="Direct Client (National)">Direct Client (National)</option>
+                                    <option value="Direct Client (Regional / Hyper-local)">Direct Client (Regional /
+                                        Hyper-local)</option>
+                                    <option value="GOVT/PSU">GOVT/PSU</option>
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="propertyType" class="form-label">Property Type:</label>
+                            <select id="propertyType" name="propertyType" class="form-select" required>
+                                <option value="Residential">Residential</option>
+                                <option value="Corporate">Corporate</option>
+
+                                <option value="Commercial">Commercial</option>
+                                <option value="Digital Billboard">Digital Billboard</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="plan" class="form-label">Plan:</label>
+                            <select id="plan" name="plan" class="form-select" required>
+                                <option value="Standard">Standard</option>
+                                <option value="Premium">Premium</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="advertiserTag" class="form-label">Advertiser Tag:</label>
+                            <input type="text" id="advertiserTag" name="advertiserTag" class="form-control" required>
+                        </div>
+                        <div class="col-md-6" style="display: flex;gap: 15px;">
+                            <label for="popRequired" class="form-label">POP Required?</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="popRequired" name="popRequired">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6" style="display: flex;gap: 15px;">
+                            <label for="geoTagging" class="form-label">Geo Tagging Required?</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="geoTagging" name="geoTagging">
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary mt-3 w-100">Create Proposal</button>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Navbar -->
+            <!-- <svg class="menu-icon" id="menuToggle" style="height: 27px;
+                border-radius: 23px;
+                width: 50px;
+                color: #fff;
+                background-color: #e1e1e8;
+                float: right;
+                margin: 0px 24px;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 12H21" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M3 6H21" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M3 18H21" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg> -->
+
+
+
+
+            <div class="home-proposal">
+                <p class="home">Home><b>Proposal</b></p>
+            </div>
+
+            <!-- Navbar -->
+            <div class="navbar">
+                <div class="nav-links" id="navLinks">
+                    <a href="#" id="InDiscussionTab" class="active" style="display: none;">In Discussion</a>
+                    <a href="#" id="pendingActivationTab" class="active">Pending Activation</a>
+                    <a href="#" id="editeedActivationTab">Editted Proposal Activation</a>
+                    <a href="#" id="activeTab">Active</a>
+                    <a href="#" id="discardTab">Discard</a>
+                </div>
+            </div>
+
+            <br />
+
+            <div class="search-container">
+                <div class="search-icon">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search by Proposal Name"
+                    onkeyup="filterTables()" />
+            </div>
+
+            <!-- In Discussion Table -->
+            <div id="inDiscussionTable" class="table-container" style="display: none;">
+                <div class="table1" style="height: 587px;">
+                    <% if (proposals.length> 0) { %>
+                        <table class="table table-striped table-hover mt-4">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th style="font-size: 16px;">Proposal Name</th>
+                                    <th style="font-size: 16px;">Order Value</th>
+                                    <th style="font-size: 16px;">Campaign Information</th>
+                                    <th style="font-size: 16px;">Reach</th>
+                                    <th style="font-size: 16px;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% proposals.forEach(proposal=> { %>
+                                    <% const startDate=new Date(proposal.start_date); const endDate=new Date(startDate);
+                                        endDate.setDate(startDate.getDate() + (proposal.end_date || 0)); const
+                                        citiesArray=(proposal.cities || '' ).split(',').map(city=> city.trim());
+                                        %>
+                                        <tr>
+                                            <td>
+                                                <%= proposal.client_name %><br>
+                                                    <%= startDate.toLocaleDateString() %> - <%=
+                                                            endDate.toLocaleDateString() %>
+                                            </td>
+                                            <td>
+                                                <%= proposal.order_value || 'N/A' %>
+                                            </td>
+                                            <td>
+                                                <%= proposal.inventory_status || 'No data' %>
+                                            </td>
+                                            <td>
+                                                <strong>
+                                                    <%= proposal.total_approx_reach %>
+                                                </strong><br>
+                                                <%= citiesArray.length %> cities, <%= proposal.total_screens %>
+                                                        screens,<br>
+                                                        <%= proposal.total_properties %> sites
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <a href="/proposals/propertiesSelect?proposalId=<%= proposal.id %>"
+                                                        style="text-decoration: none;">
+                                                        <button class="btn btn-primary">Edit</button>
+                                                    </a>
+                                                    <a href="javascript:void(0);"
+                                                        onclick="pendingActivationProposal('<%= proposal.id %>')"
+                                                        style="text-decoration: none;">
+                                                        <button class="btn btn-primary">Submit</button>
+                                                    </a>
+                                                    <a href="javascript:void(0);"
+                                                        onclick="discardProposal('<%= proposal.id %>')"
+                                                        style="text-decoration: none;">
+                                                        <button class="btn btn-danger">Discard</button>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                            </tbody>
+                        </table>
+                        <% } else { %>
+                            <p>No proposals available.</p>
+                            <% } %>
+                </div>
+            </div>
+
+
+
+            <!-- Pending Activation Table -->
+            <div id="pendingActivationTable" class="table-container">
+                <div class="table1">
+                    <table class="table table-hover mt-4">
+                        <thead class="table-primary">
+                            <tr>
+                                <th style="font-size: 16px">No.</th>
+                                <th style="font-size: 16px">Proposal Name</th>
+                                <th style="font-size: 16px">Order Value</th>
+                                <th style="font-size: 16px">Campaign Information</th>
+                                <th style="font-size: 16px">Reach</th>
+                                <th style="font-size: 16px">Action</th>
+                                <th style="font-size: 16px">Created By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (waitingForAdminApproveProposals && waitingForAdminApproveProposals.length> 0) { %>
+                                <% waitingForAdminApproveProposals.forEach((proposal, index)=> { %>
+                                    <% const startDate=new Date(proposal.start_date); const endDate=new Date(startDate);
+                                        endDate.setDate(startDate.getDate() + (proposal.end_date || 0)); const
+                                        citiesArray=(proposal.cities || '' ).split(',').map(city=> city.trim());
+                                        %>
+                                        <tr>
+                                            <td>
+                                                <%= index + 1 %>
+                                            </td>
+                                            <td>
+                                                <%= proposal.client_name %><br />
+                                                <p style="margin: 0; color: #3f3f3fa3;">
+                                                    <%= startDate.toLocaleDateString('en-GB') %> - <%= endDate.toLocaleDateString('en-GB') %>
+                                                </p>
+                                            </td>
+                                            <td>
+                                                <%= proposal.order_value || 'N/A' %>
+                                            </td>
+                                            <td>
+                                                <b>
+                                                    <%= citiesArray.length %>
+                                                </b> cities, <b>
+                                                    <%= proposal.total_screens %>
+                                                </b>
+                                                screens,<br />
+                                                <b>
+                                                    <%= proposal.total_properties %>
+                                                </b> sites
+                                            </td>
+                                            <td>
+                                                <strong>
+                                                    <%= proposal.total_approx_reach %>
+                                                </strong><br />
+                                            </td>
+                                            <td>
+                                                <a href="javascript:void(0);" style="text-decoration: none"
+                                                    onclick="adminAproval('<%= proposal.id %>')">
+                                                    <button class="btn btn-primary"
+                                                        style="border-radius: 21px; font-size: 14px;">Active</button>
+                                                </a>
+                                                <a href="javascript:void(0);" style="text-decoration: none"
+                                                    onclick="showPreview('<%= proposal.url1 %>', '<%= proposal.url2 %>', '<%= proposal.url3 %>', '<%= proposal.url4 %>', '<%= proposal.pdf_file_url %>', '<%= proposal.pdf_original_file_name %>', '<%= proposal.property_ids %>', '<%= proposal.property_names %>')">
+                                                    <button class="btn btn-primary"
+                                                        style="border-radius: 21px; font-size: 14px;">Preview</button>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <strong>
+
+                                                    <% proposalCreateUserData.forEach(createUser=> { %>
+
+                                                        <% if (proposal.user_id == createUser.id) { %>
+
+                                                            <%= createUser.name %>
+                                                                <% } %>
+                                                                    <% }) %>
+
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="7">No pending proposals available.</td>
+                                                </tr>
+                                                <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+
+            <div id="previewPopup" class="popup-container" style="display: none;">
+                <div class="popup-content1">
+                    <span class="close" onclick="closePopup()">&times;</span>
+                    <h3>Video Previews</h3>
+                    <div id="videoRow" class="video-row">
+                        <!-- Videos will be dynamically added here -->
+                    </div>
+                    <h3>Purchase Order</h3>
+                    <a id="purchaseOrderLink" href="" target="_blank" download></a>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="font-size: 16px;">Sr No.</th>
+                                    <th style="font-size: 16px;">Screen Id</th>
+                                    <th style="font-size: 16px;">Screen Name</th>
+                                    <th style="font-size: 16px;">Slot Number</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Table rows will be dynamically added here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <style>
+                .popup-container {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 1000;
+                }
+
+                .popup-content1 {
+                    background: white;
+                    padding: 20px;
+                    border-radius: 10px;
+                    text-align: center;
+                    width: 80%;
+                    max-width: 900px;
+                    height: 97%;
+                    /* Set maximum height to 97% of the viewport */
+                    overflow-y: auto;
+                    /* Enables vertical scrolling for overflowing content */
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                    position: relative;
+                }
+
+
+                .popup-content1 h3 {
+                    margin: 10px 0;
+                }
+
+                .video-row {
+                    display: flex;
+                    justify-content: space-around;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                    margin: 20px 0;
+                }
+
+                .video-row video {
+                    flex: 1;
+                    max-width: 22%;
+                    height: auto;
+                    border: 1px solid #ccc;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                }
+
+                .table-wrapper {
+                    max-height: 380px;
+                    /* Adjust table height as needed */
+                    overflow-y: auto;
+                    /* Enables vertical scrolling */
+                    margin-top: 20px;
+                    border: 1px solid #ccc;
+                    /* Optional: Adds a border around the scrollable table */
+                    border-radius: 8px;
+                    /* Optional: Rounded corners */
+                }
+
+                .table-wrapper table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+
+                .table-wrapper table th,
+                .table-wrapper table td {
+                    border: 1px solid #ccc;
+                    padding: 8px;
+                    text-align: left;
+                }
+
+                .table-wrapper table th {
+                    background-color: #f8f8f8;
+                    position: sticky;
+                    top: 0;
+                    /* Keeps table header visible while scrolling */
+                    z-index: 1;
+                    /* Ensures header stays above content */
+                }
+
+                .close {
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    font-size: 20px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    color: #333;
+                }
+            </style>
+
+
+            <!-- Editeed Activation Table -->
+            <div id="editeedActivationTable" class="table-container" style="display: none">
+                <div class="table1">
+                    <table class="table table-hover mt-4">
+                        <thead class="table-primary">
+                            <tr>
+                                <th style="font-size: 16px">No.</th>
+                                <th style="font-size: 16px">Proposal Name</th>
+                                <th style="font-size: 16px">Order Value</th>
+                                <th style="font-size: 16px">Campaign Information</th>
+                                <th style="font-size: 16px">Reach</th>
+                                <th style="font-size: 16px">Action</th>
+                                <th style="font-size: 16px">Created By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (editeedActiveProposals && editeedActiveProposals.length> 0) { %>
+                                <% editeedActiveProposals.forEach((proposal, index)=> {
+                                    const startDate = new Date(proposal.start_date);
+                                    const endDate = new Date(startDate);
+                                    endDate.setDate(startDate.getDate() + proposal.end_date);
+                                    const citiesArray = proposal.cities.split(',').map(city => city.trim());
+                                    %>
+                                    <tr>
+                                        <td>
+                                            <%= index + 1 %>
+                                        </td>
+                                        <td>
+                                            <%= proposal.client_name %><br />
+                                            <p style="margin: 0; color: #3f3f3fa3;">
+                                                <%= startDate.toLocaleDateString('en-GB') %> - <%= endDate.toLocaleDateString('en-GB') %>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <%= proposal.order_value || 'N/A' %>
+                                        </td>
+                                        <td>
+                                            <b>
+                                                <%= citiesArray.length %>
+                                            </b> cities,
+                                            <b>
+                                                <%= proposal.total_screens %>
+                                            </b> screens,<br />
+                                            <b>
+                                                <%= proposal.total_properties %>
+                                            </b> sites
+                                        </td>
+                                        <td>
+                                            <strong>
+                                                <%= proposal.total_approx_reach %>
+                                            </strong><br />
+                                        </td>
+                                        <td>
+                                            <a href="javascript:void(0);" style="text-decoration: none"
+                                                onclick="adminAproval('<%= proposal.id %>')">
+                                                <button class="btn btn-primary"
+                                                    style="border-radius: 21px; font-size: 14px;">Active</button>
+                                            </a>
+                                            <a href="javascript:void(0);" style="text-decoration: none"
+                                                onclick="showPreview('<%= proposal.url1 %>', '<%= proposal.url2 %>', 
+                                                                    '<%= proposal.url3 %>', '<%= proposal.url4 %>', 
+                                                                    '<%= proposal.pdf_file_url %>', '<%= proposal.pdf_original_file_name %>', 
+                                                                    '<%= proposal.property_ids %>', '<%= proposal.property_names %>')">
+                                                <button class="btn btn-primary"
+                                                    style="border-radius: 21px; font-size: 14px;">Preview</button>
+                                            </a>
+                                        </td>
+                                        <td>
+                                                <strong>
+
+                                                    <% proposalCreateUserData.forEach(createUser=> { %>
+
+                                                        <% if (proposal.user_id == createUser.id) { %>
+
+                                                            <%= createUser.name %>
+                                                                <% } %>
+                                                                    <% }) %>
+
+                                                </strong>
+                                            </td>
+                                    </tr>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="7">No Edited Active proposals available.</td>
+                                            </tr>
+                                            <% } %>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+            <!-- Active Table -->
+            <div id="activeTable" class="table-container" style="display: none">
+                <div class="table1">
+                    <table class="table table-hover mt-4" role="table" aria-label="Active Proposals Table">
+                        <thead class="table-primary">
+                            <tr>
+                                <th style="font-size: 16px">No.</th>
+                                <th style="font-size: 16px">Proposal Name</th>
+                                <th style="font-size: 16px">Order Value</th>
+                                <th style="font-size: 16px">Campaign Information</th>
+                                <th style="font-size: 16px">Reach</th>
+                                <th style="font-size: 16px">Status</th>
+                                <th style="font-size: 16px">Action</th>
+                                <th style="font-size: 16px">Created By</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (activeProposals && activeProposals.length> 0) { %>
+                                <% let serialNo=1; %>
+                                    <% // Initialize a counter %>
+                                        <% activeProposals.forEach(proposal=> { %>
+                                            <% const startDate=new Date(proposal.start_date); const endDate=new
+                                                Date(startDate); endDate.setDate(startDate.getDate() +
+                                                Number(proposal.end_date || 0)); const citiesArray=proposal.cities ?
+                                                proposal.cities.split(',').map(city=> city.trim()) : [];
+                                                %>
+                                                <tr>
+                                                    <td>
+                                                        <%= serialNo++ %>
+                                                    </td>
+                                                    <td>
+                                                        <%= proposal.client_name %><br />
+                                                        <p style="margin: 0; color: #3f3f3fa3;">
+                                                            <%= startDate.toLocaleDateString('en-GB') %> - <%= endDate.toLocaleDateString('en-GB') %>
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        <%= proposal.order_value || 'N/A' %>
+                                                    </td>
+                                                    <td>
+                                                        <b>
+                                                            <%= citiesArray.length %>
+                                                        </b> cities,
+                                                        <b>
+                                                            <%= proposal.total_screens || 0 %>
+                                                        </b>
+                                                        screens,<br />
+                                                        <b>
+                                                            <%= proposal.total_properties || 0 %>
+                                                        </b> sites
+                                                    </td>
+                                                    <td>
+                                                        <strong>
+                                                            <%= proposal.total_approx_reach || 'N/A' %>
+                                                        </strong>
+                                                    </td>
+                                                    <td style="color: green; font-weight: 600;">
+                                                        <%= proposal.status || 'No data' %>
+                                                    </td>
+                                                    <td>
+                                                        <a href="javascript:void(0);" style="text-decoration: none"
+                                                            onclick="deactiveProposal('<%= proposal.id%>')">
+                                                            <button class="btn btn-primary"
+                                                                aria-label="Deactivate Proposal"
+                                                                style="border-radius: 21px; font-size: 14px;">
+                                                                Deactivate
+                                                            </button>
+                                                        </a>
+                                                        <a href="javascript:void(0);" style="text-decoration: none"
+                                                            onclick="openExtendProposal('<%= proposal.start_date %>', '<%= endDate.toISOString() %>', '<%= proposal.id%>')">
+                                                            <button class="btn btn-primary" aria-label="Extend Proposal"
+                                                                style="border-radius: 21px; font-size: 14px;">
+                                                                Extend Proposal
+                                                            </button>
+                                                        </a>
+                                                        <a href="javascript:void(0);" style="text-decoration: none"
+                                                            onclick="showPreview('<%= proposal.url1 %>', '<%= proposal.url2 %>', '<%= proposal.url3 %>', '<%= proposal.url4  %>', '<%= proposal.pdf_file_url %>', '<%= proposal.pdf_original_file_name %>', '<%= proposal.property_ids %>', '<%= proposal.property_names %>')">
+                                                            <button class="btn btn-primary"
+                                                                aria-label="Preview Proposal"
+                                                                style="border-radius: 21px; font-size: 14px;">
+                                                                Preview
+                                                            </button>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                <strong>
+
+                                                    <% proposalCreateUserData.forEach(createUser=> { %>
+
+                                                        <% if (proposal.user_id == createUser.id) { %>
+
+                                                            <%= createUser.name %>
+                                                                <% } %>
+                                                                    <% }) %>
+
+                                                </strong>
+                                            </td>
+                                                </tr>
+                                                <% }) %>
+                                                    <% } else { %>
+                                                        <tr>
+                                                            <td colspan="7">No Active proposals available.</td>
+                                                        </tr>
+                                                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+
+
+
+            <div id="extendProposal"
+                style="display: none; flex-direction: column; align-items: center; padding: 20px; border: 1px solid #ccc; background-color: #f9f9f9; width: 400px;">
+                <h3>Extend Proposal</h3>
+                <form id="extendProposalForm">
+                    <div style="margin-bottom: 15px;">
+                        <label for="currentStartDate">Current Start Date:</label>
+                        <input type="text" id="currentStartDate" readonly style="width: 100%; margin-top: 5px;" />
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label for="currentEndDate">Current End Date:</label>
+                        <input type="text" id="currentEndDate" readonly style="width: 100%; margin-top: 5px;" />
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label for="newEndDate">Runs for Days:</label>
+                        <input type="text" id="newEndDate" required style="width: 100%; margin-top: 5px;" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeExtendProposal()">Cancel</button>
+                </form>
+            </div>
+            <style>
+                #extendProposal {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
+            </style>
+
+
+            <!-- Discard Table -->
+            <div id="discardTable" class="table-container" style="display: none">
+                <div class="table1">
+                    <table class="table table-hover mt-4">
+                        <thead class="table-primary">
+                            <tr>
+                                <th style="font-size: 16px">No.</th>
+                                <th style="font-size: 16px">Proposal Name</th>
+                                <th style="font-size: 16px">Order Value</th>
+                                <th style="font-size: 16px">Campaign Information</th>
+                                <th style="font-size: 16px">Reach</th>
+                                <th style="font-size: 16px">Action</th>
+                                <th style="font-size: 16px">Created By</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (discardProposals && discardProposals.length> 0) { %>
+                                <% discardProposals.forEach((proposal, index)=> { %>
+                                    <% const startDate=new Date(proposal.start_date); const endDate=new Date(startDate);
+                                        endDate.setDate(startDate.getDate() + (proposal.end_date || 0)); const
+                                        citiesArray=(proposal.cities || '' ).split(',').map(city=> city.trim());
+                                        %>
+                                        <tr>
+                                            <td>
+                                                <%= index + 1 %>
+                                            </td>
+                                            <td>
+                                                <%= proposal.client_name %><br />
+                                                <p style="margin: 0; color: #3f3f3fa3;">
+                                                    <%= startDate.toLocaleDateString('en-GB') %> - <%= endDate.toLocaleDateString('en-GB') %>
+                                                </p>
+                                            </td>
+                                            <td>
+                                                <%= proposal.order_value || 'N/A' %>
+                                            </td>
+                                            <td>
+                                                <b>
+                                                    <%= citiesArray.length %>
+                                                </b> cities, <b>
+                                                    <%= proposal.total_screens %>
+                                                </b>
+                                                screens,<br />
+                                                <b>
+                                                    <%= proposal.total_properties %>
+                                                </b> sites
+                                            </td>
+                                            <td>
+                                                <strong>
+                                                    <%= proposal.total_approx_reach %>
+                                                </strong>
+                                            </td>
+                                            <td style="color: #c82333;">
+                                                <!-- No action required -->
+                                                <em>Discarded</em>
+                                            </td>
+                                            <td>
+                                                <strong>
+
+                                                    <% proposalCreateUserData.forEach(createUser=> { %>
+
+                                                        <% if (proposal.user_id == createUser.id) { %>
+
+                                                            <%= createUser.name %>
+                                                                <% } %>
+                                                                    <% }) %>
+
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="7" class="text-center">
+                                                        No discarded proposals available.
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- Include jQuery for simplicity -->
+        <script>
+            $(document).ready(function () {
+                $('#show-proposal-form').on('click', function () {
+                    $('#proposal-popup').show();
+                });
+
+                $('#close-popup').on('click', function () {
+                    $('#proposal-popup').hide();
+                });
+            });
+
+
+
+            const inputField = document.getElementById('inputField');
+            const dropdownList = document.getElementById('dropdownList');
+            const selectedCities = document.getElementById('selectedCities');
+            let cities = []; // Array to store selected cities
+
+            // Function to select a city from the dropdown
+            function selectItem(city) {
+                // If city is already selected, remove it from the list
+                if (cities.includes(city)) {
+                    cities = cities.filter(c => c !== city);
+                } else {
+                    cities.push(city); // Add city to the list if not already selected
+                }
+
+                // Update the input field to show selected cities
+                inputField.value = cities.join(', ');
+                // Store selected cities in the hidden input
+                selectedCities.value = cities.join(', ');
+
+                // Hide dropdown if the user is done selecting (optional)
+                // dropdownList.style.display = 'none'; 
+            }
+
+            // Toggle dropdown visibility when input field is clicked
+            inputField.addEventListener('click', () => {
+                dropdownList.style.display = dropdownList.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // Close the dropdown if clicked outside
+            document.addEventListener('click', function (event) {
+                if (!inputField.contains(event.target) && !dropdownList.contains(event.target)) {
+                    dropdownList.style.display = 'none';
+                }
+            });
+
+
+
+
+
+
+            //nabar table
+
+            const tabs = document.querySelectorAll('.navbar a');
+            const tables = {
+                'InDiscussionTab': document.getElementById('inDiscussionTable'),
+                'pendingActivationTab': document.getElementById('pendingActivationTable'),
+                'editeedActivationTab': document.getElementById('editeedActivationTable'),
+                'activeTab': document.getElementById('activeTable'),
+                'discardTab': document.getElementById('discardTable'),
+            };
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    tabs.forEach(t => t.classList.remove('active')); // Remove active class from all tabs
+                    this.classList.add('active'); // Add active class to clicked tab
+
+                    Object.values(tables).forEach(table => table.style.display = 'none'); // Hide all tables
+                    tables[this.id].style.display = 'block'; // Show the corresponding table
+                });
+            });
+
+
+
+
+
+        </script>
+
+        <script>
+            async function adminAproval(proposalId) {
+                // Show the loading SweetAlert before sending the request
+                const swalLoading = Swal.fire({
+                    title: 'Processing...',
+                    text: 'Please wait while we approve the proposal.',
+                    icon: 'info',
+                    allowOutsideClick: false,  // Prevent closing during the process
+                    showConfirmButton: false,  // Hide the confirm button
+                    didOpen: () => {
+                        Swal.showLoading();  // Show loading spinner
+                    }
+                });
+
+                try {
+                    // Make an AJAX request to update the proposal status
+                    const response = await fetch('/Dashboard/Proposal/AdminAproval', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ proposalId: proposalId }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');  // If response is not okay, throw an error
+                    }
+
+                    const data = await response.json();  // Parse the response JSON
+                    swalLoading.close();  // Close the loading SweetAlert
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Proposal approved successfully!',
+                        confirmButtonText: 'Okay'
+                    }).then(() => {
+                        // Reload the proposals table to reflect the changes
+                        location.reload();  // Simple way to refresh the page
+                    });
+                } catch (error) {
+                    swalLoading.close();  // Close the loading SweetAlert
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'There was an error updating the proposal: ' + error.message,
+                        confirmButtonText: 'Okay'
+                    });
+                }
+            }
+
+
+
+            async function deactiveProposal(proposalId) {
+                // Show the loading SweetAlert before sending the request
+                const swalLoading = Swal.fire({
+                    title: 'Processing...',
+                    text: 'Please wait while we deactivate the proposal.',
+                    icon: 'info',
+                    allowOutsideClick: false,  // Prevent closing during the process
+                    showConfirmButton: false,  // Hide the confirm button
+                    didOpen: () => {
+                        Swal.showLoading();  // Show loading spinner
+                    }
+                });
+
+                try {
+                    // Make an AJAX request to update the proposal status
+                    const response = await fetch('/Dashboard/Proposal/DeactiveProposal', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ proposalId: proposalId }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');  // If response is not okay, throw an error
+                    }
+
+                    const data = await response.json();  // Parse the response JSON
+                    swalLoading.close();  // Close the loading SweetAlert
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Proposal deactivated successfully!',
+                        confirmButtonText: 'Okay'
+                    }).then(() => {
+                        // Reload the proposals table to reflect the changes
+                        location.reload();  // Simple way to refresh the page
+                    });
+                } catch (error) {
+                    swalLoading.close();  // Close the loading SweetAlert
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'There was an error deactivating the proposal: ' + error.message,
+                        confirmButtonText: 'Okay'
+                    });
+                }
+            }
+
+
+
+
+
+
+
+            function formatDateToMMDDYY(dateString) {
+                const date = new Date(dateString);
+                // Extract the components of the date
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+                const day = String(date.getDate()).padStart(2, '0');
+                const year = String(date.getFullYear()); // Take the last two digits of the year
+                return `${day}-${month}-${year}`;
+            }
+
+
+
+
+
+            let currentProposalId = null;
+
+
+            function openExtendProposal(startDate, endDate, proposalId) {
+                // Convert dates to the desired format (MM-DD-YY)
+                const formattedStartDate = formatDateToMMDDYY(startDate);
+                const formattedEndDate = formatDateToMMDDYY(endDate);
+
+                // Populate the form fields
+                document.getElementById('currentStartDate').value = formattedStartDate;
+                document.getElementById('currentEndDate').value = formattedEndDate;
+
+                // Show the extend proposal form
+                document.getElementById('extendProposal').style.display = 'flex';
+
+                // Store the current proposal ID for later use
+                currentProposalId = proposalId;
+            }
+            function closeExtendProposal() {
+                document.getElementById('extendProposal').style.display = 'none';
+                currentProposalId = null;
+            }
+
+            document.getElementById('extendProposalForm').addEventListener('submit', async function (event) {
+                event.preventDefault();
+                const newEndDate = document.getElementById('newEndDate').value;
+
+                if (!currentProposalId || !newEndDate) return;
+
+                try {
+                    const response = await fetch('/Dashboard/Proposal/ExtendProposal', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ proposalId: currentProposalId, newEndDate })
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(errorText);
+                    }
+
+                    const data = await response.json();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: data.message,
+                        confirmButtonText: 'Okay'
+                    }).then(() => location.reload());
+                } catch (error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: error.message,
+                        confirmButtonText: 'Okay'
+                    });
+                }
+            });
+
+
+
+            function showPreview(url1, url2, url3, url4, pdfUrl, pdfName, propertyIds, propertyNames) {
+                console.log("Video URLs:", url1, url2, url3, url4);
+                console.log("PDF URL:", pdfUrl, "PDF Name:", pdfName);
+                console.log("Property IDs:", propertyIds);
+                console.log("Property Names:", propertyNames);
+                const videoRow = document.getElementById("videoRow");
+                const purchaseOrderLink = document.getElementById("purchaseOrderLink");
+                const tableBody = document.querySelector("#previewPopup table tbody");
+                // Clear existing content
+                videoRow.innerHTML = '';
+                tableBody.innerHTML = '';
+                // Function to safely extract video_url from the JSON string or direct URL
+                function extractVideoUrl(data) {
+                    try {
+                        const parsedData = JSON.parse(data);
+                        return parsedData.video_url || "";
+                    } catch (error) {
+                        return data; // Return the data directly if it's not JSON
+                    }
+                }
+                // Add videos dynamically
+                [url1, url2, url3, url4].forEach((url, index) => {
+                    const videoUrl = extractVideoUrl(url);
+                    if (videoUrl) {
+                        console.log(`Adding video ${index + 1}:`, videoUrl);
+                        const video = document.createElement("video");
+                        video.src = videoUrl;
+                        video.controls = true;
+                        videoRow.appendChild(video);
+                    }
+                });
+                // Set the purchase order link
+                purchaseOrderLink.href = pdfUrl;
+                purchaseOrderLink.textContent = pdfName || "Download Purchase Order";
+                // Map propertyIds to propertyNames
+                const propertyIdArray = propertyIds.split(',').map(id => id.trim());
+                const propertyNameArray = propertyNames.split(',').map(name => name.trim());
+                // Create a map from screenProposal for quick lookup
+                const screenMap = {};
+                screenProposal.forEach(screen => {
+                    screenMap[screen.screenid] = screen.screenname;
+                });
+                // Populate table rows
+                propertyIdArray.forEach((id, index) => {
+                    const screenId = id || "Unknown";
+                    const screenName = screenMap[screenId] || "Unknown";
+                    const slotName = propertyNameArray[index] || "Unknown Slot";
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+<td>${index + 1}</td>
+      <td>${screenId}</td>
+      <td>${screenName}</td>
+      <td>${slotName}</td>
+    `;
+                    tableBody.appendChild(row);
+                });
+                // Show the popup
+                document.getElementById("previewPopup").style.display = "flex";
+            }
+            function closePopup() {
+                document.getElementById("previewPopup").style.display = "none";
+            }
+
+        </script>
+
+
+
+
+        <!-- JavaScript for Search -->
+        <script>
+            function filterTables() {
+                const input = document.getElementById('searchInput').value.toLowerCase();
+                const tables = document.querySelectorAll('.table-container');
+
+                tables.forEach(tableContainer => {
+                    const rows = tableContainer.querySelectorAll('tbody tr');
+                    rows.forEach(row => {
+                        const cells = row.querySelectorAll('td');
+                        const match = Array.from(cells).some(cell =>
+                            cell.textContent.toLowerCase().includes(input)
+                        );
+
+                        if (match) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            }
+        </script>
+</body>
+
+</html>

@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Select Screens to Publish Playlist</title>
+  <link rel="icon" type="image/png"
+    href="https://res.cloudinary.com/dqfnwh89v/image/upload/v1724408615/qxvvfcf7ftgklhl2k03v.png">
+  <link rel="stylesheet" href="/css/groupScreen.css" />
+
+  <style>
+    .goback {
+      padding: 12px 20px;
+      border: 1px solid #0D6EFD;
+      font-weight: 700;
+      color: #0D6EFD;
+      background: transparent;
+    }
+
+    .goback:hover {
+      background: #0D6EFD;
+      color: white;
+    }
+
+    .header {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .footer-div {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .no-slot {
+      color: red;
+      font-weight: bold;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 2%;
+      margin-bottom: 10px;
+      background-color: #fff;
+      padding: 10px 18px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px 0px #00000040;
+    }
+
+    .tab-link {
+      cursor: pointer;
+      font-size: 17px;
+      text-decoration: none;
+      padding-bottom: 5px;
+      transition: all 0.3s ease;
+      color: #000;
+      font-weight: bold;
+      position: relative;
+    }
+
+    .tab-link:hover {
+      color: #0d6efd;
+    }
+
+    /* Add a border-bottom when hovering on tabs */
+    .tab-link:hover::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: #0d6efd;
+    }
+
+    /* Active tab styling */
+    .tab-link.active {
+      border-bottom: 2px solid #0d6efd;
+      color: #0d6efd;
+    }
+
+    /* Hide all tab panes by default */
+    .tab-pane {
+      display: none;
+    }
+
+    /* Show active tab pane */
+    .tab-pane.active {
+      display: block;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+  <div class="group">
+    <p id="proposalID" style="display: none;">
+      <%= proposalId %>
+    </p>
+    <div class="heading">
+      <h3>Select Screens</h3>
+    </div>
+
+    <!-- Tab navigation -->
+    <div class="tabs">
+      <span class="tab-link active" data-tab="screens-tab">Screens</span>
+      <span class="tab-link" data-tab="group-screens-tab">Group Screens</span>
+    </div>
+
+    <script>
+      const tabs = document.querySelectorAll('.tab-link');
+      const tabPanes = document.querySelectorAll('.tab-pane');
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function () {
+          // Remove 'active' class from all tabs
+          tabs.forEach(t => t.classList.remove('active'));
+
+          // Add 'active' class to clicked tab
+          this.classList.add('active');
+
+          // Hide all tab panes
+          tabPanes.forEach(pane => pane.classList.remove('active'));
+
+          // Show corresponding tab pane
+          const activeTab = this.getAttribute('data-tab');
+          document.getElementById(activeTab).classList.add('active');
+        });
+      });
+
+    </script>
+
+
+
+
+
+    <div class="selection-screens">
+
+      <div class="select-screen">
+        <div class="filters" style="display: none;">
+          <label for="cityDropdown">City:</label>
+          <select id="cityDropdown">
+            <option value="">Select City</option>
+          </select>
+
+          <label for="locationDropdown">Location:</label>
+          <select id="locationDropdown" disabled>
+            <option value="">Select Location</option>
+          </select>
+
+          <label for="screenNameDropdown">Screen Name:</label>
+          <select id="screenNameDropdown" disabled>
+            <option value="">Select Screen Name</option>
+          </select>
+        </div>
+        <input type="search" id="searchInput" placeholder="Search">
+
+
+
+        <div class="table-class">
+
+          <div class="tab-content">
+            <!-- Screens Tab -->
+            <div id="screens-tab" class="tab-pane active">
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Screen ID</th>
+                    <th>Screen Name</th>
+                    <th>Reach</th>
+                    <th>Address</th>
+                    <th>City</th>
+                    <th>Next Available Slot</th>
+                  </tr>
+                </thead>
+                <tbody id="screensTableBody">
+                  <% screens.forEach(screen=> { %>
+                    <tr class="screen-row">
+                      <td>
+                        <input type="checkbox" name="checkbox" value="<%= screen.screenid %>"
+                          data-screenname="<%= screen.screenname %>" data-address="<%= screen.location %>"
+                          data-playlistname="<%= screen.reach %>" data-city="<%= screen.city %>"
+                          <%=propertiesIds.includes(String(screen.screenid)) ? 'checked' : '' %>
+                        <%= screen.nextAvailableSlot ? '' : 'disabled' %> />
+                      </td>
+                      <td>
+                        <%= screen.screenid %>
+                      </td>
+                      <td class="screen-screenname">
+                        <%= screen.screenname %>
+                      </td>
+                      <td id="reach_<%= screen.screenid %>">
+                        <%= screen.reach %>
+                      </td>
+                      <td>
+                        <%= screen.location %>
+                      </td>
+                      <td>
+                        <%= screen.city %>
+                      </td>
+                      <td class="<%= screen.nextAvailableSlot ? '' : 'no-slot' %>">
+                        <%= screen.nextAvailableSlot ? screen.nextAvailableSlot : 'No slot available' %>
+                      </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Group Screens Tab -->
+            <div id="group-screens-tab" class="tab-pane">
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Group Name</th>
+                    <th>Total Reach</th>
+                    <th>Address</th>
+                    <th>Screen Count</th>
+                  </tr>
+                </thead>
+                <tbody id="groupscreensTableBody">
+                  <% groupScreens.forEach(group=> { %>
+                    <tr>
+                      <td>
+                        <input 
+                          type="checkbox" 
+                          name="groupCheckbox" 
+                          value="<%= group.id %>"
+                          data-groupname="<%= group.group_name %>" 
+                          data-totalreach="<%= group.total_reach %>"
+                          data-address="<%= group.unique_locations %>"
+                          data-screens="<%= JSON.stringify(group.selectedscreens) %>" 
+                          <%= group.selectedscreens && group.selectedscreens.some(screen => !screen.nextAvailableSlot) ? 'disabled' : '' %>
+                          <%= group.selectedscreens && group.selectedscreens.every(screen => propertiesIds.includes(String(screen.screenid))) ? 'checked' : '' %>
+                        />
+                      </td>
+                      <td>
+                        <%= group.group_name %>
+                      </td>
+                      <td>
+                        <%= group.total_reach %>
+                      </td>
+                      <td>
+                        <%= group.unique_locations %>
+                      </td>
+                      <td>
+                        <%= group.selectedscreens.length %>
+                      </td> <!-- Display screen count -->
+                    </tr>
+                    <!-- Optionally, list the selected screens under each group -->
+                    <tr style="display: none;">
+                      <td colspan="6">
+                        <% if (group.selectedscreens && group.selectedscreens.length> 0) { %>
+                          <ul>
+                            <% group.selectedscreens.forEach(screen=> { %>
+                              <li>
+                                <%= screen.screenname %> (ID: <%= screen.screenid %>) - Next Available Slot: <%=
+                                      screen.nextAvailableSlot || "No Slot Available" %>
+                              </li>
+                              <% }) %>
+                          </ul>
+                          <% } else { %>
+                            <p>No screens available for this group.</p>
+                            <% } %>
+                      </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+        </div>
+        <div id="noResultsMessage" style="display: none; text-align: center;">No screens found.</div>
+      </div>
+
+      <div class="selected-screen">
+        <div class="table-class">
+          <table id="selectedScreensTable">
+            <thead>
+              <tr>
+                <th>SR.NO</th>
+                <th>SCREEN ID</th>
+                <th>SCREEN NAME</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+          <div id="noResultsMessageForSelectedScreen"
+            style="display: none; text-align: center;font-size: 16px;margin-top: 10px;">No screens have been selected.
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="footer-div" style="text-align: center;">
+      <button type="button" onclick="goBack()" class="btn btn-warning">Go Back</button>
+      <button type="submit" class="btn btn-primary">Next</button>
+    </div>
+  </div>
+
+
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+  // Update selected screens table
+  function updateSelectedScreens() {
+    const selectedScreensTableBody = document.querySelector("#selectedScreensTable tbody");
+    selectedScreensTableBody.innerHTML = ""; // Clear existing rows
+
+    // Gather checked screens from the Screens Tab
+    const selectedScreens = Array.from(document.querySelectorAll('#screensTableBody input[type="checkbox"]:checked')).map((checkbox) => ({
+      screenId: checkbox.value,
+      screenName: checkbox.getAttribute("data-screenname") || "N/A",
+    }));
+
+    // Gather checked screens from the Group Screens Tab
+    const selectedGroupScreens = Array.from(document.querySelectorAll('#groupscreensTableBody input[type="checkbox"]:checked')).flatMap((checkbox) => {
+      const groupScreens = JSON.parse(checkbox.getAttribute("data-screens")) || [];
+      return groupScreens.map((screen) => ({
+        screenId: screen.screenid,
+        screenName: screen.screenname || "N/A",
+      }));
+    });
+
+    // Combine all selected screens and remove duplicates using a Map
+    const screenMap = new Map(); // Key: screenId, Value: { screenId, screenName }
+    [...selectedScreens, ...selectedGroupScreens].forEach((screen) => {
+      screenMap.set(screen.screenId, screen);
+    });
+
+    // Convert the Map back to an array
+    const uniqueSelectedScreens = Array.from(screenMap.values());
+
+    // Populate the selected screens table
+    uniqueSelectedScreens.forEach((screen, index) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${screen.screenId}</td>
+        <td>${screen.screenName}</td>
+      `;
+      selectedScreensTableBody.appendChild(row);
+    });
+
+    // Show or hide the "No screens found" message
+    const noResultsMessage = document.getElementById("noResultsMessageForSelectedScreen");
+    noResultsMessage.style.display = uniqueSelectedScreens.length > 0 ? "none" : "block";
+  }
+
+  // Add event listeners to checkboxes in both tabs
+  document.querySelectorAll('#screensTableBody input[type="checkbox"], #groupscreensTableBody input[type="checkbox"]').forEach(checkbox => {
+    checkbox.addEventListener("change", updateSelectedScreens);
+  });
+
+  // Initial call to populate the selected screens table
+  updateSelectedScreens();
+});
+  </script>
+
+  <script>
+    // Sort rows so screens with available slots appear first
+    document.addEventListener("DOMContentLoaded", function () {
+      const tabLinks = document.querySelectorAll(".tab-link");
+      const panes = document.querySelectorAll(".tab-pane");
+
+      tabLinks.forEach(link => {
+        link.addEventListener("click", () => {
+          // Remove the 'active' class from all tab links and panes
+          tabLinks.forEach(l => l.classList.remove("active"));
+          panes.forEach(p => p.classList.remove("active"));
+
+          // Add 'active' class to the clicked tab and the corresponding pane
+          link.classList.add("active");
+          const targetPane = document.getElementById(link.dataset.tab);
+
+          if (targetPane) {
+            targetPane.classList.add("active");
+          }
+        });
+      });
+
+
+
+
+
+
+
+
+
+      const tableBody = document.getElementById("screensTableBody");
+      const rows = Array.from(tableBody.querySelectorAll(".screen-row"));
+
+      const rowsWithSlots = rows.filter(row => !row.querySelector("td:last-child").classList.contains("no-slot"));
+      const rowsWithoutSlots = rows.filter(row => row.querySelector("td:last-child").classList.contains("no-slot"));
+
+      tableBody.innerHTML = "";
+      rowsWithSlots.forEach(row => tableBody.appendChild(row));
+      rowsWithoutSlots.forEach(row => tableBody.appendChild(row));
+    });
+
+
+    // // Handle 'Next' button click to gather selected screen data and send it to the server
+    // document.querySelector('.btn-primary').addEventListener('click', function () {
+    //   const checkboxes = document.querySelectorAll('#screensTableBody input[type="checkbox"]:checked');
+
+    //   // Gather selected screen IDs, next available slots, reach values, and addresses
+    //   const selectedScreens = Array.from(checkboxes).map(checkbox => {
+    //     const screenId = checkbox.value;
+    //     const row = checkbox.closest("tr");
+    //     const nextAvailableSlot = row.querySelector("td:last-child").textContent.trim();
+    //     const reach = parseInt(document.getElementById(`reach_${screenId}`).textContent.trim(), 10); // Use id to get reach
+    //     const address = row.querySelector("td:nth-child(5)").textContent.trim(); // Get address from 5th column
+
+    //     return { screenId, nextAvailableSlot, reach, address };
+    //   });
+
+    //   const screenIds = selectedScreens.map(screen => screen.screenId); // Array of screen IDs
+    //   const nextAvailableSlots = selectedScreens.map(screen => screen.nextAvailableSlot); // Array of next available slots
+    //   const totalReach = selectedScreens.reduce((sum, screen) => sum + screen.reach, 0); // Calculate total reach
+
+    //   // Create a Set of unique addresses and count them
+    //   const uniqueAddresses = new Set(selectedScreens.map(screen => screen.address));
+    //   const uniqueLocationsCount = uniqueAddresses.size; // Count of unique locations
+
+    //   const proposalID = document.getElementById('proposalID').textContent.trim();
+
+    //   console.log("Selected Screens:", selectedScreens);
+    //   console.log("Total Reach:", totalReach);
+    //   console.log("Unique Locations Count:", uniqueLocationsCount);
+
+    //   // Send data to the server using a POST request
+    //   fetch('/proposals/saveScreens', {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({
+    //       proposalID: proposalID,
+    //       screenIds: screenIds,
+    //       nextAvailableSlots: nextAvailableSlots,
+    //       totalScreens: screenIds.length,
+    //       totalReach: totalReach, // Include total reach
+    //       uniqueLocationsCount: uniqueLocationsCount, // Include unique locations count
+    //     }),
+    //   })
+    //     .then(response => {
+    //       console.log("Raw response:", response);
+    //       return response.json();
+    //     })
+    //     .then(data => {
+    //       console.log("Server response data:", data);
+    //       if (data.status === 'success') {
+    //         Swal.fire({
+    //           title: 'Success!',
+    //           text: 'Screens saved successfully!',
+    //           icon: 'success',
+    //           confirmButtonText: 'OK',
+    //         }).then(() => {
+    //           const proposalID = data.proposalID.trim();
+    //           const redirectURL = data.popRequired
+    //             ? `/proposals/popRequired?proposalID=${proposalID}`
+    //             : `/proposals/pricing?proposalID=${proposalID}`;
+    //           console.log("Redirecting to:", redirectURL);
+    //           window.location.href = redirectURL;
+    //         });
+    //       } else {
+    //         // Handle error response
+    //         console.error("Error data from server:", data);
+    //         const invalidSelections = data.invalidSelections
+    //           ? data.invalidSelections
+    //             .map(selection => `Screen ID ${selection.screenid}, Slot ${selection.slot.replace('slot', '')}`)
+    //             .join('\n')
+    //           : "No specific invalid selections provided.";
+    //         Swal.fire({
+    //           title: 'Error!',
+    //           text: `The following selections are not available:\n${invalidSelections}`,
+    //           icon: 'error',
+    //           confirmButtonText: 'OK',
+    //         });
+    //       }
+    //     })
+    //     .catch(error => {
+    //       console.error("Fetch error:", error);
+    //       Swal.fire({
+    //         title: 'Error!',
+    //         text: 'Failed to save data. Please try again.',
+    //         icon: 'error',
+    //         confirmButtonText: 'OK',
+    //       });
+    //     });
+    // });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.querySelector('.btn-primary').addEventListener('click', function () {
+      // Selected Screens
+      const selectedScreens = Array.from(document.querySelectorAll('#screensTableBody input[type="checkbox"]:checked')).map(checkbox => {
+        const screenId = checkbox.value;
+        const row = checkbox.closest("tr");
+        const nextAvailableSlot = row.querySelector("td:last-child").textContent.trim();
+        const reach = parseInt(document.getElementById(`reach_${screenId}`).textContent.trim(), 10);
+        const address = row.querySelector("td:nth-child(5)").textContent.trim();
+
+        console.log("Selected Screen:", { screenId, nextAvailableSlot, reach, address });
+        return { screenId, nextAvailableSlot, reach, address };
+      });
+
+      // Selected Groups (directly from the group checkboxes)
+      const selectedGroups = Array.from(document.querySelectorAll('#groupscreensTableBody input[type="checkbox"]:checked')).map(checkbox => {
+        const groupId = checkbox.value;
+        const groupName = checkbox.getAttribute('data-groupname');
+        const totalReach = parseInt(checkbox.getAttribute('data-totalreach'), 10) || 0;
+        const address = checkbox.getAttribute('data-address') || 'Unknown';
+        const selectedScreensData = JSON.parse(checkbox.getAttribute('data-screens'));
+
+        console.log("Group Data:", { groupId, groupName, totalReach, address });
+
+        // Access selected screens from the group and combine with group reach
+        const groupScreens = selectedScreensData.map(screen => {
+          const screenReach = screen.reach || 0; // Get screen's reach from the group data
+          const screenAddress = screen.location || 'Unknown'; // Get screen's address from the group data
+          return {
+            screenId: screen.screenid,
+            nextAvailableSlot: screen.nextAvailableSlot || 'No slot available',
+            reach: screenReach,
+            address: screenAddress
+          };
+        });
+
+        console.log("Group Screens:", groupScreens);
+
+        return { groupId, groupName, totalReach, address, groupScreens };
+      });
+      // Create a unique mapping of screenIds to their slots
+      const uniqueScreens = new Map();
+
+      // Add screens from selectedScreens
+      selectedScreens.forEach(screen => {
+        uniqueScreens.set(screen.screenId, screen.nextAvailableSlot);
+      });
+
+      // Add screens from selectedGroups
+      selectedGroups.forEach(group => {
+        group.groupScreens.forEach(screen => {
+          uniqueScreens.set(screen.screenId, screen.nextAvailableSlot);
+        });
+      });
+
+      // Extract unique screenIds and nextAvailableSlots
+      const screenIds = Array.from(uniqueScreens.keys());
+      const nextAvailableSlots = Array.from(uniqueScreens.values());
+
+      // Calculate total reach
+      let totalReach = selectedScreens.reduce((sum, screen) => sum + screen.reach, 0);
+      totalReach += selectedGroups.reduce((sum, group) => sum + group.totalReach, 0);
+
+      // Calculate unique addresses
+      const uniqueAddresses = new Set([
+        ...selectedScreens.map(screen => screen.address),
+        ...selectedGroups.flatMap(group => group.address)
+      ]);
+      const uniqueLocationsCount = uniqueAddresses.size;
+
+      const proposalID = document.getElementById('proposalID') ? document.getElementById('proposalID').textContent.trim() : '';
+      console.log("Proposal ID:", proposalID);
+
+      // Log combined data
+      console.log("Screen IDs:", screenIds);
+      console.log("Next Available Slots:", nextAvailableSlots);
+      console.log("Total Reach:", totalReach);
+      console.log("Unique Locations Count:", uniqueLocationsCount);
+      console.log("Unique Locations:", [...uniqueAddresses]); // Convert Set to array for better display
+
+
+
+      // Send data to the server
+      fetch('/proposals/saveScreens', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          proposalID: proposalID,
+          screenIds: screenIds,
+          nextAvailableSlots: nextAvailableSlots,
+          totalScreens: screenIds.length,
+          totalReach: totalReach,
+          uniqueLocationsCount: uniqueLocationsCount,
+          uniqueAddresses: [...uniqueAddresses],  // Convert Set to array before sending
+        }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log("Server response data:", data);
+
+          if (data.status === 'success') {
+            Swal.fire({
+              title: 'Success!',
+              text: 'Screens saved successfully!',
+              icon: 'success',
+              confirmButtonText: 'OK',
+            }).then(() => {
+              const proposalID = data.proposalID.trim();
+              const redirectURL = data.popRequired
+                ? `/proposals/popRequired?proposalID=${proposalID}`
+                : `/proposals/pricing?proposalID=${proposalID}`;
+              console.log("Redirecting to:", redirectURL);
+              window.location.href = redirectURL;
+            });
+          } else {
+            console.error("Error data from server:", data);
+
+            const invalidSelections = data.invalidSelections
+              ? data.invalidSelections
+                .map(selection => `Screen ID ${selection.screenid}, Slot ${selection.slot.replace('slot', '')}`)
+                .join('\n')
+              : "No specific invalid selections provided.";
+
+            Swal.fire({
+              title: 'Error!',
+              text: `The following selections are not available:\n${invalidSelections}`,
+              icon: 'error',
+              confirmButtonText: 'OK',
+            });
+          }
+        })
+        .catch(error => {
+          console.error("Fetch error:", error);
+
+          Swal.fire({
+            title: 'Error!',
+            text: 'Failed to save data. Please try again.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
+        });
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function goBack() {
+      window.history.back();
+    }
+
+    // Search function for filtering screens based on user input
+    document.getElementById('searchInput').addEventListener('input', function () {
+      const searchTerm = this.value.toLowerCase();
+      const tableRows = document.querySelectorAll('#screensTableBody .screen-row');
+      let hasResults = false;
+
+      tableRows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const rowContainsTerm = Array.from(cells).some(cell =>
+          cell.textContent.toLowerCase().includes(searchTerm)
+        );
+
+        row.style.display = rowContainsTerm ? '' : 'none';
+        if (rowContainsTerm) hasResults = true;
+      });
+
+      document.getElementById('noResultsMessage').style.display = hasResults ? 'none' : '';
+    });
+  </script>
+  <script>
+    // document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
+
+
+
+
+      const cityDropdown = document.getElementById('cityDropdown');
+      const locationDropdown = document.getElementById('locationDropdown');
+      const screenNameDropdown = document.getElementById('screenNameDropdown');
+      const tableRows = document.querySelectorAll('#screensTableBody .screen-row');
+
+
+      // let cities = `<%- JSON.stringify(cities) %>`;
+      let cities = `<%- JSON.stringify(cities).replace(/\\/g, '\\\\').replace(/"/g, '\\"') %>`;
+
+      // console.log("Cities data:", cities);  // Check this output in the browser console
+      cities = JSON.parse(cities); // Parse the JSON string back into a JavaScript array
+      try {
+
+
+        if (Array.isArray(cities)) {
+          // Cities is an array, proceed with the map function
+          let uniqueCities = [...new Set(cities.map(city => city.city))];
+          console.log("uniqueCities", uniqueCities);
+
+          // Assuming the dropdowns are present in your HTML
+          const cityDropdown = document.getElementById('cityDropdown');
+
+          // Populate the city dropdown with unique city options
+          uniqueCities.forEach(city => {
+            const option = document.createElement('option');
+            option.value = city;
+            option.textContent = city;
+            cityDropdown.appendChild(option);
+          });
+        } else {
+          console.error("Cities is not an array!");
+        }
+      } catch (error) {
+        console.error("Error parsing cities data:", error);
+      }
+
+      // Handle city selection
+      cityDropdown.addEventListener('change', function () {
+        const selectedCity = this.value;
+
+        // Reset and populate location dropdown
+        locationDropdown.innerHTML = '<option value="">Select Location</option>';
+        locationDropdown.disabled = !selectedCity;
+
+        const locations = [...new Set(
+          cities
+            .filter(city => city.city === selectedCity)
+            .map(city => city.location)
+        )];
+        locations.forEach(location => {
+          const option = document.createElement('option');
+          option.value = location;
+          option.textContent = location;
+          locationDropdown.appendChild(option);
+        });
+
+        // Clear screen name dropdown
+        screenNameDropdown.innerHTML = '<option value="">Select Screen Name</option>';
+        screenNameDropdown.disabled = true;
+
+        // Filter table
+        filterTable(selectedCity, null, null);
+      });
+
+      // Handle location selection
+      locationDropdown.addEventListener('change', function () {
+        const selectedCity = cityDropdown.value;
+        const selectedLocation = this.value;
+
+        // Reset and populate screen name dropdown
+        screenNameDropdown.innerHTML = '<option value="">Select Screen Name</option>';
+        screenNameDropdown.disabled = !selectedLocation;
+
+        const screenNames = cities
+          .filter(city => city.city === selectedCity && city.location === selectedLocation)
+          .map(city => city.screenname);
+        screenNames.forEach(name => {
+          const option = document.createElement('option');
+          option.value = name;
+          option.textContent = name;
+          screenNameDropdown.appendChild(option);
+        });
+
+        // Filter table
+        filterTable(selectedCity, selectedLocation, null);
+      });
+
+      // Handle screen name selection
+      screenNameDropdown.addEventListener('change', function () {
+        const selectedCity = cityDropdown.value;
+        const selectedLocation = locationDropdown.value;
+        const selectedScreenName = this.value;
+
+        // Filter table
+        filterTable(selectedCity, selectedLocation, selectedScreenName);
+      });
+
+      function filterTable(city, location, screenName) {
+        let hasResults = false;
+
+        tableRows.forEach(row => {
+          const rowCity = row.querySelector('td:nth-child(6)').textContent.trim();
+          const rowLocation = row.querySelector('td:nth-child(5)').textContent.trim();
+          const rowScreenName = row.querySelector('.screen-screenname').textContent.trim();
+
+          const matchesCity = !city || rowCity === city;
+          const matchesLocation = !location || rowLocation === location;
+          const matchesScreenName = !screenName || rowScreenName === screenName;
+
+          if (matchesCity && matchesLocation && matchesScreenName) {
+            row.style.display = '';
+            hasResults = true;
+          } else {
+            row.style.display = 'none';
+          }
+        });
+
+        document.getElementById('noResultsMessage').style.display = hasResults ? 'none' : '';
+      }
+    });
+  </script>
+
+
+
+
+
+</body>
+
+</html> 
